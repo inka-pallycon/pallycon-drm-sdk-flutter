@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "video_codec": "AVC",
+      "content_id": "multitracks",
+      "maximum_resolution": "1920*1080",
+      "audio_codec": "AAC",
+      "title": "multitracks",
+      "audio_language": "English",
+      "frame_rate": "25",
+      "container_format": "TS",
+      "url": "https://contents.pallycon.com/DEV/sglee/multitracks/dash/stream.mpd",
+      "content_type": "vod",
+      "media_type": "video",
+      "stream_format": "dash",
+      "video_profile": "Main",
+      "token": "eyJrZXlfcm90YXRpb24iOmZhbHNlLCJyZXNwb25zZV9mb3JtYXQiOiJvcmlnaW5hbCIsInVzZXJfaWQiOiJ0ZXN0VXNlciIsImRybV90eXBlIjoid2lkZXZpbmUiLCJzaXRlX2lkIjoiREVNTyIsImhhc2giOiIzMEZkbGxpWndcL1wvVCs3ajBrQWFCZW9pUGQ3cVIyVmVRWjR2aUowcEdMUms9IiwiY2lkIjoibXVsdGl0cmFja3MiLCJwb2xpY3kiOiI5V3FJV2tkaHB4VkdLOFBTSVljbkpzY3Z1QTlzeGd1YkxzZCthanVcL2Jva0M5UzIreEFQWVJibWZ6OHRvRUIzOFBkcjNCanh2SHdCdVpQNllLbWNONnR5RUltemtOc0NSNmZZZFJVbzBvYnpVZHVYTXUwMnY5cXpmRDF3c1FpZHRCbXVGVDYzSnNNSk83Q2dsclljMlpEWnlrdHR0UDVtRXp0eTJvWjlnRWlVZGFxQkxROUpubDZWUDJKN0x5WUFXSTZiNWtIN2lHQTFxOFgxNjFRXC9leThaNVB6amQ0YXNnMFFUSWl1MG91bjM3RnNGT28xcmJGXC9xQXNCM2FJRFA3UHNhY0xOVnNpeGxlQkhFelo2VFhFU3pVRXVrTVdJd0dvU3Y3QitXdWFub051SCtEVUYrWWpQck1ORm45NU5cL0N4SXlGOXp0OVJaZU9ENlRwOFA4R2hGSEZUU0lxUlhFT0pHSjE0VGJWekxCN1JqbTNrVmlGSERnbk42NTZLNEt0cTBsbjZLV21kWnE4aGxrTDVFQ1NtQlVDc2Q4eWt5RlwvdnJBZ0tlZ1laa2p4ZmdFZk9PekE2V2FxSWl5elU4dWFscVdURk9ISk1QK2N4S0pDXC9oMndmNzFVR0FPb0xaclM0QzhHMWJudXNZalJJSVRKZ2V6c3krXC9JM1l3UVpmYmpoUEVGWkhkcjhzbUhEcnZhNHFzc1ZPXC9CVHJIbG9SQ1k0UUJ0Vmc2YmtoODFEZXh5UVYzTWRMcllTeUV6MnA5anFPaGNraTQrRDB0XC9FYVEzVDgwZGR3SXRGQnlrSmhiOTJhRTRGSXNPcFN1bjVYKzVJVURoMnE0b2pyN3ExTSszRmlNaHBWdE1qRkpuelBOSVdDaksrZDdURzJ0SmR0YU5waEx3N25NXC9TSWZUVDR3eGVVMUE5OXdxNWRNYlVjZkxnenVmbk5CSkhQNUZ2NmdSMW5jWFgxZ1VoMkFIZVR6T1FOQ2JJeEpZZjgrME5LK0VVSVFmVXA0Nk1hSHJCOE1xUk5BbE1EK0dIM0R6bTF6TlJTN2xTR0pEQktWMGVTUWNVdHhBWVdHREl1WGwzQWp0anVvNWFNcFpVd3N4RkpvQlRjRWRzVE1qYWNpODJoTDluSW5LNEZwTjFscUJRXC9BZFZqbEUzc3U0TkdXbXJrOFltUlZrb3pZSml2TmFwZklwT3d0ek5OcU1QNThlbjZkeVphaHBPbml4VmZ4eVFQYmpwb2Z0UHRBVWQxNFlKRUtiY2JQZE5ybFl1bHNQbVwvZ0gxZTRpMTlGV2dEM2NSUWtyZHdaMjc0czdcL3NKQXluOWhVRE5KeUx1bGcrTT0iLCJ0aW1lc3RhbXAiOiIyMDIzLTEwLTI3VDA2OjM4OjQxWiJ9",
+      "license_server_url": "https://license-staging.pallycon.com/ri/licenseManager.do",
+      "license_cipher_path": "tables.bin"
+    },
+    {
+      "video_codec": "AVC",
+      "content_id": "multitracks",
+      "maximum_resolution": "1920*1080",
+      "audio_codec": "AAC",
+      "title": "multitracks",
+      "audio_language": "English",
+      "frame_rate": "25",
+      "container_format": "TS",
+      "url": "https://contents.pallycon.com/DEV/sglee/multitracks/hls/master.m3u8",
+      "content_type": "vod",
+      "media_type": "video",
+      "stream_format": "hls",
+      "video_profile": "Main",
+      "token": "eyJrZXlfcm90YXRpb24iOmZhbHNlLCJyZXNwb25zZV9mb3JtYXQiOiJvcmlnaW5hbCIsInVzZXJfaWQiOiJ0ZXN0VXNlciIsImRybV90eXBlIjoiZmFpcnBsYXkiLCJzaXRlX2lkIjoiREVNTyIsImhhc2giOiJZSm8razdBc0tEbHU2K2N0RzkySmJHS3dVWXdhVmpcL1wvaWRmQVcwOERaamM9IiwiY2lkIjoibXVsdGl0cmFja3MiLCJwb2xpY3kiOiI5V3FJV2tkaHB4VkdLOFBTSVljbkpzY3Z1QTlzeGd1YkxzZCthanVcL2JvbVFaUGJxSSt4YWVZZlFvY2NrdnVFZkFhcWRXNWhYZ0pOZ2NTUzNmUzdvOE5zandzempNdXZ0KzBRekxrWlZWTm14MGtlZk9lMndDczJUSVRnZFU0QnZOOWFiaGQwclFrTUlybW9JZW9KSHFJZUhjUnZWZjZUMTRSbVRBREVwQ1k3UEhmUGZcL1ZGWVwvVmJYdXhYXC9XVHRWU0ZKU0g5c3hwd1FJUVhyNUI2UitBYWFmU2ZWWFNLazRtVkZsZTJQXC9wcmpoNTgrYk9oYnRVNDQ0bHg5b3JlRzUiLCJ0aW1lc3RhbXAiOiIyMDIzLTAzLTA5VDA0OjIzOjAyWiJ9"
+    }
+  ]
+}
