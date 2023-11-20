@@ -77,6 +77,8 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
           break;
         case PallyConEventType.migrationError:
           break;
+        case PallyConEventType.licenseCipherError:
+          break;
         case PallyConEventType.unknown:
           break;
       }

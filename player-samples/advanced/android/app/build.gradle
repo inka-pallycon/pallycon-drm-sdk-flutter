@@ -84,8 +84,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
 
     // 3rd library
-//    implementation files('/Users/sungjuyun/inka/pallycon-drm-sdk-flutter/player-samples/advanced/android/app/libs/PallyConLicenseCipher.aar')
-    implementation (name:"PallyConLicenseCipher", ext:"aar")
+//    implementation (name:"PallyConLicenseCipher", ext:"aar")
 
     // Gson
     implementation "com.google.code.gson:gson:2.9.1"

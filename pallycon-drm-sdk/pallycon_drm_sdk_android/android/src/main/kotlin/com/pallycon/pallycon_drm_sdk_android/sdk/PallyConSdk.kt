@@ -88,7 +88,12 @@ class PallyConSdk constructor(val context: Context) {
                             EventType.MigrationError,
                             e.msg
                         )
-
+                    is PallyConException.PallyConLicenseCipherException ->
+                        instance?.pallyConEvent?.sendPallyConEvent(
+                            url,
+                            EventType.LicenseCipherError,
+                            e.msg
+                        )
                     else ->
                         instance?.pallyConEvent?.sendPallyConEvent(
                             url, EventType.UnknownError,
@@ -151,6 +156,9 @@ class PallyConSdk constructor(val context: Context) {
 
     fun setPallyConEvent(pallyConEvent: PallyConEvent?) {
         this.pallyConEvent = pallyConEvent
+        if (wvSDKList.isNotEmpty()) {
+            wvSDKList.entries.first()?.value.setPallyConEventListener(listener)
+        }
     }
 
     fun setDownloadProgressEvent(downloadProgressEvent: DownloadProgressEvent?) {
@@ -212,7 +220,7 @@ class PallyConSdk constructor(val context: Context) {
 
     suspend fun getObjectForContent(config: PallyConContentConfiguration): String {
         return suspendCancellableCoroutine<String> { continuation ->
-            if (wvSDKList[config.contentId] != null) {
+            if (wvSDKList[config.contentId] != null && config.contentUrl != null) {
                 wvSDKList[config.contentId]!!.updateSecure({
                     print("update secure time")
                     val index =
@@ -221,11 +229,11 @@ class PallyConSdk constructor(val context: Context) {
                         val gson = Gson().toJson(contentDataList[index])
                         continuation.resume(gson, null)
                     } else {
-                        continuation.resume(config.contentUrl, null)
+                        continuation.resume(config.contentUrl!!, null)
                     }
                 }, { e ->
                     pallyConEvent?.sendPallyConEvent(
-                        config.contentUrl,
+                        config.contentUrl!!,
                         EventType.DetectedDeviceTimeModifiedError,
                         e.msg
                     )
@@ -257,19 +265,16 @@ class PallyConSdk constructor(val context: Context) {
 
     fun addStartDownload(config: PallyConContentConfiguration) {
         val data = createContentData(config)
+
         if (!contentDataList.contains(data)) {
             contentDataList.add(data)
         }
 
-        if (!wvSDKList.containsKey(config.contentId)) {
-            wvSDKList[config.contentId] = PallyConWvSDK.createPallyConWvSDK(
+        if (!wvSDKList.containsKey(config.contentId) && config.contentId != null) {
+            wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
                 context,
                 data
             )
-        }
-
-        if (wvSDKList.size == 1) {
-            wvSDKList.entries.first()?.value.setPallyConEventListener(listener)
         }
 
         wvSDKList[config.contentId]?.also { sdk ->
@@ -286,21 +291,21 @@ class PallyConSdk constructor(val context: Context) {
                 when (e) {
                     is PallyConException.NetworkConnectedException ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl,
+                            config.contentUrl ?: "",
                             EventType.NetworkConnectedError,
                             e.msg
                         )
 
                     is PallyConException.ContentDataException ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl,
+                            config.contentUrl ?: "",
                             EventType.ContentDataError,
                             e.msg
                         )
 
                     else ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl,
+                            config.contentUrl ?: "",
                             EventType.DownloadError,
                             e.msg
                         )
@@ -322,12 +327,12 @@ class PallyConSdk constructor(val context: Context) {
                 sdk.download(tracks)
             } catch (e: PallyConException.ContentDataException) {
                 pallyConEvent?.sendPallyConEvent(
-                    config.contentUrl,
+                    config.contentUrl ?: "",
                     EventType.ContentDataError,
                     e.msg
                 )
             } catch (e: PallyConException.DownloadException) {
-                pallyConEvent?.sendPallyConEvent(config.contentUrl, EventType.DownloadError, e.msg)
+                pallyConEvent?.sendPallyConEvent(config.contentUrl ?: "", EventType.DownloadError, e.msg)
             }
         }
     }
@@ -427,8 +432,12 @@ class PallyConSdk constructor(val context: Context) {
         }
 
         var isOK = true
+        if (config.contentId == null) {
+            return false
+        }
+
         wvSDKList[config.contentId]?.let {
-            isOK = it.migrateDownloadedContent(config.contentId, null)
+            isOK = it.migrateDownloadedContent(config.contentId!!, null)
         }
 
         return isOK
@@ -528,7 +537,8 @@ class PallyConSdk constructor(val context: Context) {
             url = config.contentUrl,
             localPath = "",
             drmConfig = drmConfig,
-            cookie = config.contentCookie
+            cookie = config.contentCookie,
+            httpHeaders = contentHeaders
         )
     }
 }

@@ -12,9 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-#  pallycon_drm_sdk_interface:
-#    path: ../pallycon_drm_sdk_interface
-  pallycon_drm_sdk_interface: ^1.1.0
+  pallycon_drm_sdk_interface:
+    path: ../pallycon_drm_sdk_interface
+#  pallycon_drm_sdk_interface: ^1.1.0
 
 dev_dependencies:
   flutter_test:

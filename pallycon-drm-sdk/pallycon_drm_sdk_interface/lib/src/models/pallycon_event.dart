@@ -128,6 +128,12 @@ class PallyConEvent {
             url: pallyConEvent['url'],
             message: pallyConEvent['message']
         );
+      case 'licenseCipherError':
+        return PallyConEvent(
+            eventType: PallyConEventType.licenseCipherError,
+            url: pallyConEvent['url'],
+            message: pallyConEvent['message']
+        );
       default:
         return PallyConEvent(
             eventType: PallyConEventType.unknown,

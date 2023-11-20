@@ -27,6 +27,8 @@ enum PallyConEventType {
   detectedDeviceTimeModifiedError,
   /// Error that occurs when migrating from SDK
   migrationError,
+  /// Error that occurs when a license cipher from SDK
+  licenseCipherError,
   /// Unknown error type
   unknown
 }

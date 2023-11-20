@@ -13,6 +13,7 @@ enum class EventType(private var type: String) {
     NetworkConnectedError("networkConnectedError"),
     DetectedDeviceTimeModifiedError("detectedDeviceTimeModifiedError"),
     MigrationError("migrationError"),
+    LicenseCipherError("licenseCipherError"),
     UnknownError("unknownError");
 
     override fun toString(): String {
