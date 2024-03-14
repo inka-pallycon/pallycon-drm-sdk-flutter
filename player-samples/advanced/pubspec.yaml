@@ -41,7 +41,7 @@ dependencies:
 
   #BetterPlayer for PallyConDRM
   better_player:
-    path: ../../pallycon-multidrm-flutter-sample/
+    path: ../../../pallycon-multidrm-flutter-sample/
 #  drm_video:
 #    path: ../../pallycon-drm_video
 #  drm_video: ^0.0.1
