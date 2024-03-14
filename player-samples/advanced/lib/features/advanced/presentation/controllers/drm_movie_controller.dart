@@ -5,7 +5,6 @@ import 'package:advanced/core/usecases/usecase.dart';
 import 'package:advanced/features/advanced/domain/entities/download_status.dart';
 import 'package:advanced/features/advanced/domain/entities/drm_movie.dart';
 import 'package:advanced/features/advanced/domain/usecases/get_drm_content_use_case.dart';
-import 'package:better_player/better_player.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
@@ -19,6 +18,7 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
 
   static const inkaLicenseUrl =
       "https://license-global.pallycon.com/ri/licenseManager.do";
+  static const certUrl = "https://license-global.pallycon.com/ri/fpsKeyManager.do";
   static const siteId = "DEMO";
 
   // var movies = RxList<DrmMovie>([]);
@@ -137,7 +137,9 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
             state![i].url, state![i].contentId,
             token: state![i].token,
             licenseUrl: state![i].licenseServerUrl ?? inkaLicenseUrl,
-            licenseCipherTablePath: state![i].licenseCipherPath);
+            licenseCipherTablePath: state![i].licenseCipherPath,
+            certificateUrl: state![i].licenseCertUrl ?? "$certUrl?siteId=$siteId",
+        );
         pallyConContentConfigs.add(config);
         downloadStateCheck(i);
       }

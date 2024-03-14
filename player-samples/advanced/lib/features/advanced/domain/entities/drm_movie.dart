@@ -17,6 +17,7 @@ class DrmMovie extends Equatable {
   final String audioLanguage;
   final String? licenseServerUrl;
   final String? licenseCipherPath;
+  final String? licenseCertUrl;
   String? token;
   DownloadStatus? downloadStatus;
 
@@ -35,8 +36,9 @@ class DrmMovie extends Equatable {
       required this.audioCodec,
       required this.audioLanguage,
       this.token,
-        this.licenseServerUrl,
-        this.licenseCipherPath,
+      this.licenseServerUrl,
+      this.licenseCipherPath,
+      this.licenseCertUrl,
       this.downloadStatus});
 
   @override
@@ -56,6 +58,7 @@ class DrmMovie extends Equatable {
         audioLanguage,
         licenseServerUrl ?? "https://license-global.pallycon.com/ri/licenseManager.do/",
         licenseCipherPath ?? "",
+        licenseCertUrl ?? "",
         token ?? "",
         downloadStatus ?? DownloadStatus.pending
       ];

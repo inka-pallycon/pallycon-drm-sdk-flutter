@@ -23,6 +23,7 @@ DrmMovieModel _$DrmMovieModelFromJson(Map<String, dynamic> json) =>
       json['audio_language'] as String,
       json['license_server_url'] as String?,
       json['license_cipher_path'] as String?,
+      json['license_cert_url'] as String?,
       json['token'] as String?,
       $enumDecodeNullable(_$DownloadStatusEnumMap, json['downloadStatus']),
     );
@@ -44,6 +45,7 @@ Map<String, dynamic> _$DrmMovieModelToJson(DrmMovieModel instance) =>
       'audio_language': instance.audioLanguage,
       'license_server_url': instance.licenseServerUrl,
       'license_cipher_path': instance.licenseCipherPath,
+      'license_cert_url': instance.licenseCertUrl,
       'token': instance.token,
       'downloadStatus': _$DownloadStatusEnumMap[instance.downloadStatus],
     };

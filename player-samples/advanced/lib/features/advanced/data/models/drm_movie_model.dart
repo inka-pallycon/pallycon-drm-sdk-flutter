@@ -22,6 +22,7 @@ class DrmMovieModel extends DrmMovie {
       this.audioLanguage,
       this.licenseServerUrl,
       this.licenseCipherPath,
+      this.licenseCertUrl,
       this.token,
       this.downloadStatus)
       : super(
@@ -40,6 +41,7 @@ class DrmMovieModel extends DrmMovie {
             audioLanguage: audioLanguage,
             licenseServerUrl: licenseServerUrl,
             licenseCipherPath: licenseCipherPath,
+            licenseCertUrl: licenseCertUrl,
             token: token,
             downloadStatus: downloadStatus );
 
@@ -87,6 +89,9 @@ class DrmMovieModel extends DrmMovie {
 
   @JsonKey(name: 'license_cipher_path')
   String? licenseCipherPath;
+
+  @JsonKey(name: 'license_cert_url')
+  String? licenseCertUrl;
 
   String? token;
 
