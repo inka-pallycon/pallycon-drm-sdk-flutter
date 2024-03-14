@@ -5,6 +5,7 @@ import 'package:advanced/core/usecases/usecase.dart';
 import 'package:advanced/features/advanced/domain/entities/download_status.dart';
 import 'package:advanced/features/advanced/domain/entities/drm_movie.dart';
 import 'package:advanced/features/advanced/domain/usecases/get_drm_content_use_case.dart';
+import 'package:better_player/better_player.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
@@ -121,9 +122,13 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
   }
 
   setMovies(List<DrmMovie> movieList) {
-    change(
-        movieList.where((i) => p.extension(i.url) == checkExtension).toList(),
-        status: RxStatus.success());
+    final Set<String> uniqueContentIds = {};
+
+    final filteredMovies = movieList.where((movie) {
+      return p.extension(movie.url) == checkExtension && uniqueContentIds.add(movie.contentId);
+    }).toList();
+
+    change(filteredMovies, status: RxStatus.success());
 
     if (state != null) {
       pallyConContentConfigs.clear();
@@ -132,8 +137,7 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
             state![i].url, state![i].contentId,
             token: state![i].token,
             licenseUrl: state![i].licenseServerUrl ?? inkaLicenseUrl,
-            licenseCipherTablePath: state![i].licenseCipherPath
-        );
+            licenseCipherTablePath: state![i].licenseCipherPath);
         pallyConContentConfigs.add(config);
         downloadStateCheck(i);
       }
@@ -294,6 +298,12 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
     }
 
     return contentData;
+  }
+
+  PallyConContentConfiguration getContentConfig(DrmMovie drmMovie) {
+    final index = pallyConContentConfigs
+        .indexWhere((p0) => p0.contentUrl == drmMovie.url);
+    return pallyConContentConfigs[index];
   }
 
   @override

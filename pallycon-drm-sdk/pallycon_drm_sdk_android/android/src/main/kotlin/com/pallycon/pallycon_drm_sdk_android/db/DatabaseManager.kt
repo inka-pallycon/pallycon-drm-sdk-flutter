@@ -17,11 +17,11 @@ class DatabaseManager {
     }
 
     fun setContents(siteId: String, list: List<ContentData>) {
-        preferences.edit().putString(siteId, gson.toJson(list)).apply()
+        preferences?.edit()?.putString(siteId, gson.toJson(list))?.apply()
     }
 
     fun getContents(siteId: String): List<ContentData> {
-        val string = preferences.getString(siteId, "")
+        val string = preferences?.getString(siteId, "")
         if (string == null || string.isEmpty()) {
             return ArrayList<ContentData>().toList()
         }
@@ -34,7 +34,7 @@ class DatabaseManager {
 
         private var instance: DatabaseManager? = null
         private lateinit var context: Context
-        private lateinit var preferences: SharedPreferences
+        private var preferences: SharedPreferences? = null
         private lateinit var gson: Gson
 
         fun getInstance(_context: Context): DatabaseManager {

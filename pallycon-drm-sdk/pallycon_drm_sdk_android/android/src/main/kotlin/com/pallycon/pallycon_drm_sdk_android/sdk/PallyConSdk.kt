@@ -183,8 +183,8 @@ class PallyConSdk constructor(val context: Context) {
             if (siteId == null) {
                 return
             }
-
-            contentDataList.addAll(DatabaseManager.getInstance(context).getContents(siteId!!))
+            val db = DatabaseManager.getInstance(context)
+            contentDataList.addAll(db.getContents(siteId!!))
             contentDataList.forEach() { contentData ->
                 contentData.contentId?.let {
                     wvSDKList[it] = PallyConWvSDK.createPallyConWvSDK(
@@ -270,11 +270,20 @@ class PallyConSdk constructor(val context: Context) {
             contentDataList.add(data)
         }
 
+        var isFirstDownload = false
+        if (wvSDKList.isEmpty()) {
+            isFirstDownload = true
+        }
+
         if (!wvSDKList.containsKey(config.contentId) && config.contentId != null) {
             wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
                 context,
                 data
             )
+        }
+
+        if (isFirstDownload) {
+            wvSDKList[config.contentId]?.setPallyConEventListener(listener)
         }
 
         wvSDKList[config.contentId]?.also { sdk ->

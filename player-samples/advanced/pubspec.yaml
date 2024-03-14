@@ -40,8 +40,8 @@ dependencies:
 #  pallycon_drm_sdk: ^1.1.0
 
   #BetterPlayer for PallyConDRM
-#  better_player:
-#    path: ../../pallycon-betterplayer/
+  better_player:
+    path: ../../pallycon-multidrm-flutter-sample/
 #  drm_video:
 #    path: ../../pallycon-drm_video
 #  drm_video: ^0.0.1

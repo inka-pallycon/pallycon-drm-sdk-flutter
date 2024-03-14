@@ -1,12 +1,16 @@
 import 'package:advanced/core/theme/colors_theme.dart';
 import 'package:advanced/features/advanced/presentation/controllers/drm_movie_controller.dart';
+import 'package:better_player/better_player.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../domain/entities/download_status.dart';
 import '../../domain/entities/drm_movie.dart';
 import 'views/movie_cell.dart';
+import 'dart:io' show Platform;
 
 class DrmContentPage extends GetView<DrmMovieController> {
   const DrmContentPage({Key? key}) : super(key: key);
@@ -19,8 +23,7 @@ class DrmContentPage extends GetView<DrmMovieController> {
         appBar: AppBar(
           backgroundColor: ThemeColor.white,
           title: const Text('PallyCon DRM SDK Sample',
-              style:
-              TextStyle(color: Colors.orange, fontFamily: 'Poppins')),
+              style: TextStyle(color: Colors.orange, fontFamily: 'Poppins')),
           elevation: 0,
         ),
         body: SafeArea(
@@ -34,23 +37,23 @@ class DrmContentPage extends GetView<DrmMovieController> {
                     if (state == null) {
                       return const Text('');
                     }
-
                     final movie = state[index];
-                    return GestureDetector(
-                      onTap: () {
-                        _startPlayer(index);
-                      },
-                      child: MovieCell(drmMovie: movie),
+                    return MovieCell(
+                        key: ValueKey(movie.contentId),
+                        drmMovie: movie,
+                        onPlayPressed: () {
+                          _startPlayerForDownloaded(index);
+                        }
                     );
                   },
                 ),
                 onLoading: const Center(child: CircularProgressIndicator()),
                 onError: (error) => Center(
-                    child: Text(
-                      'Error: $error',
-                      style: const TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
+                  child: Text(
+                    'Error: $error',
+                    style: const TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ],
@@ -58,13 +61,11 @@ class DrmContentPage extends GetView<DrmMovieController> {
         ));
   }
 
-  Future<void> _startPlayer(int index) async {
+  Future<void> _startPlayerForDownloaded(int index) async {
     try {
-      // controller.releaseSdks();
-      // final String result = await platform.invokeMethod('StartSecondActivity');
       final objects = await controller.getObjectForContent(index);
-      final String result = await platform.invokeMethod('StartSecondActivity', objects);
-
+      final String result =
+          await platform.invokeMethod('StartSecondActivity', objects);
       debugPrint('Result: $result ');
     } on PlatformException catch (e) {
       debugPrint("Error: '${e.message}'.");
