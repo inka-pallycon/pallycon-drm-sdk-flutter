@@ -36,24 +36,25 @@ class _MovieCellState extends State<MovieCell> {
             else
               SizedBox(
                 height: 80,
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isPlayerVisible = true;
-                          });
-                        },
-                        child: const Icon(Icons.play_circle_fill, size: 45, color: Colors.white),
-                      ),
-                      const SizedBox(width: 5),
-                      const Text(
-                        "Streaming Play",
-                        style: TextStyle(fontSize: 10, color: Colors.white),
-                      ),
-                    ],
+                child:
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPlayerVisible = true;
+                    });
+                  },
+                  child: const Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.play_circle_fill, size: 45, color: Colors.white),
+                        SizedBox(width: 5),
+                        Text(
+                          "Streaming Play",
+                          style: TextStyle(fontSize: 10, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

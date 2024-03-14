@@ -8,7 +8,7 @@ A Flutter pallycon_drm_sdk plugin which provides easy to apply Multi-DRM(Android
 ## **support environment**
 
 - Android 5.0 (Lolipop) & Android targetSdkVersion 31 or higher
-- iOS 11.2 higher
+- iOS 12.0 higher
 - This SDK supports ExoPlayer version 2.18.1 on Android.
 
 ## **Important**

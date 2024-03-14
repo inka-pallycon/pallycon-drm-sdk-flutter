@@ -107,6 +107,30 @@ class MockPallyConDrmSdkPlatform
   void resumeDownloadTask(PallyConContentConfiguration config) {
     // TODO: implement resumeDownloadTask
   }
+
+  @override
+  Future<bool> migrateDatabase(PallyConContentConfiguration config) {
+    // TODO: implement migrateDatabase
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> needsMigrateDatabase(PallyConContentConfiguration config) {
+    // TODO: implement needsMigrateDatabase
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> reDownloadCertification(PallyConContentConfiguration config) {
+    // TODO: implement reDownloadCertification
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> updateSecureTime() {
+    // TODO: implement updateSecureTime
+    throw UnimplementedError();
+  }
 }
 
 void main() {
