@@ -22,6 +22,7 @@ class MovieCell extends StatefulWidget {
 
 class _MovieCellState extends State<MovieCell> {
   bool isPlayerVisible = false;
+  BetterPlayer? betterPlayer;
 
   @override
   Widget build(BuildContext context) {
@@ -32,32 +33,9 @@ class _MovieCellState extends State<MovieCell> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isPlayerVisible)
-              createBetterPlayer()
+              createBetterPlayer() ?? nonePlayer()
             else
-              SizedBox(
-                height: 80,
-                child:
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isPlayerVisible = true;
-                    });
-                  },
-                  child: const Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.play_circle_fill, size: 45, color: Colors.white),
-                        SizedBox(width: 5),
-                        Text(
-                          "Streaming Play",
-                          style: TextStyle(fontSize: 10, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              nonePlayer(),
             const SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +71,37 @@ class _MovieCellState extends State<MovieCell> {
     );
   }
 
-  Widget createBetterPlayer() {
+  Widget nonePlayer() {
+    return SizedBox(
+      height: 80,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            isPlayerVisible = true;
+          });
+        },
+        child: const Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.play_circle_fill, size: 45, color: Colors.white),
+              SizedBox(width: 5),
+              Text(
+                "Streaming Play",
+                style: TextStyle(fontSize: 10, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget? createBetterPlayer() {
+    if (betterPlayer != null) {
+      return betterPlayer;
+    }
+
     const betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
@@ -121,7 +129,8 @@ class _MovieCellState extends State<MovieCell> {
         drmConfiguration: drmConfig);
 
     betterPlayerController.setupDataSource(betterPlayerDataSource);
-    return BetterPlayer(controller: betterPlayerController);
+    betterPlayer = BetterPlayer(controller: betterPlayerController);
+    return betterPlayer;
   }
 
   String movieInformation() {

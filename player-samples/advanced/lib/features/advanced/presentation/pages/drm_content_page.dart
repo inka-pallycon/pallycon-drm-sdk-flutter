@@ -1,16 +1,11 @@
 import 'package:advanced/core/theme/colors_theme.dart';
 import 'package:advanced/features/advanced/presentation/controllers/drm_movie_controller.dart';
-import 'package:better_player/better_player.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../domain/entities/download_status.dart';
-import '../../domain/entities/drm_movie.dart';
 import 'views/movie_cell.dart';
-import 'dart:io' show Platform;
 
 class DrmContentPage extends GetView<DrmMovieController> {
   const DrmContentPage({Key? key}) : super(key: key);
