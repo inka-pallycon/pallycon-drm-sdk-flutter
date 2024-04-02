@@ -151,9 +151,6 @@ class _MovieCellState extends State<MovieCell> {
   Widget downloadButton(BuildContext context) {
     Widget icon = GestureDetector(
       onTap: () {
-        setState(() {
-          isPlayerVisible = false;
-        });
         widget.controller.downloadContent(widget.drmMovie);
       },
       child: const Icon(

@@ -46,6 +46,10 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
       print(e.message);
     }
 
+    setListener();
+  }
+
+  setListener() {
     PallyConDrmSdk.onPallyConEvent.listen((event) {
       var downloadState = DownloadStatus.pending;
       switch (event.eventType) {

@@ -275,12 +275,17 @@ class PallyConSdk constructor(val context: Context) {
             isFirstDownload = true
         }
 
-        if (!wvSDKList.containsKey(config.contentId) && config.contentId != null) {
-            wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
-                context,
-                data
-            )
-        }
+//        if (!wvSDKList.containsKey(config.contentId) && config.contentId != null) {
+//            wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
+//                context,
+//                data
+//            )
+//        }
+
+        wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
+            context,
+            data
+        )
 
         if (isFirstDownload) {
             wvSDKList[config.contentId]?.setPallyConEventListener(listener)
