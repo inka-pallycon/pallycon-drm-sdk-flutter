@@ -7,7 +7,7 @@ This is the official iOS implementation of the [pallycon_drm_sdk](https://pub.de
 
 ## Usage
 
-Starting from version 1.0.0 of the [pallycon_drm_sdk](https://pub.dev/packages/pallycondrmsdk) plugin, this package is the recommended iOS implementation. It will automatically be included as a dependency when you include `pallycon_drm_sdk: ^1.0.0` in your app's pubspec.yaml file.
+Starting from version 1.1.1 of the [pallycon_drm_sdk](https://pub.dev/packages/pallycondrmsdk) plugin, this package is the recommended iOS implementation. It will automatically be included as a dependency when you include `pallycon_drm_sdk: ^1.0.0` in your app's pubspec.yaml file.
 
 For more detailed instructions on using the API, please refer to the [README.md](../pallycon_drm_sdk/README.md) file of the [pallycon_drm_sdk](https://pub.dev/packages/pallycondrmsdk) package.
 
