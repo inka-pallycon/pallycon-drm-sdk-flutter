@@ -156,8 +156,8 @@ class PallyConSdk constructor(val context: Context) {
 
     fun setPallyConEvent(pallyConEvent: PallyConEvent?) {
         this.pallyConEvent = pallyConEvent
-        if (wvSDKList.isNotEmpty()) {
-            wvSDKList.entries.first()?.value.setPallyConEventListener(listener)
+        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
+            sdk.setPallyConEventListener(listener)
         }
     }
 
@@ -207,8 +207,8 @@ class PallyConSdk constructor(val context: Context) {
             }
         }
 
-        if (wvSDKList.isNotEmpty()) {
-            wvSDKList.entries.first()?.value.setPallyConEventListener(listener)
+        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
+            sdk.setPallyConEventListener(listener)
         }
     }
 

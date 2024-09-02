@@ -6,8 +6,15 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import android.os.Bundle
+import android.view.WindowManager
 
 class MainActivity: FlutterActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         val channel = MethodChannel(flutterEngine.getDartExecutor(), "com.pallycon/startActivity")
