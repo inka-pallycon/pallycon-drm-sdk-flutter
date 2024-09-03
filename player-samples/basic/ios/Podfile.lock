@@ -3,12 +3,11 @@ PODS:
   - pallycon_drm_sdk_ios (1.0.0):
     - Flutter
     - PallyConFPSSDK
-  - PallyConFPSSDK (1.17.3)
+  - PallyConFPSSDK (2.3.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - pallycon_drm_sdk_ios (from `.symlinks/plugins/pallycon_drm_sdk_ios/ios`)
-  - PallyConFPSSDK
 
 SPEC REPOS:
   trunk:
@@ -22,9 +21,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  pallycon_drm_sdk_ios: d3975e153259d9bc62a20a85943a72bc02c887e9
-  PallyConFPSSDK: 77ae817a70d094e69a7edda46fd69214688a6511
+  pallycon_drm_sdk_ios: 7d92e42da78ef4bd2a80d2cee1ba9964807d43e0
+  PallyConFPSSDK: a54d1fe8df495ca33bc7d0f26220b37be54a1beb
 
-PODFILE CHECKSUM: 16c1f36481cdf697d3a7d28e84fb4f0170987691
+PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.15.2

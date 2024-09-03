@@ -48,7 +48,7 @@ import PallyConFPSSDK
         let token = drmJson["token"] as? String ?? ""
 
         // 1. PallyCon FPS SDK initialize
-        pallyconSdk = try? PallyConFPSSDK(siteId: siteId, siteKey: "", fpsLicenseDelegate: self)
+        pallyconSdk = PallyConFPSSDK()
         guard let contentUrl = URL(string: url) else {
             return
         }
@@ -56,8 +56,11 @@ import PallyConFPSSDK
         let urlAsset = AVURLAsset(url: contentUrl)
         
         // 2. Acquire a Token information
-//        pallyconSdk?.prepare(urlAsset: urlAsset, token: token)
-        pallyconSdk?.prepare(urlAsset: urlAsset, userId: "utest", contentId: contentId, token: token, licenseUrl: drmLicenseUrl)
+        let drm_content = PallyConDrmConfiguration(avURLAsset: urlAsset,
+                                                   contentId: contentId,
+                                                   certificateUrl: "https://license-global.pallycon.com/ri/fpsKeyManager.do?siteId=\(siteId)",
+                                                   authData: token)
+        pallyconSdk?.prepare(Content: drm_content)
         
         let playerItem = AVPlayerItem(asset: urlAsset)
         let avPlayer = AVPlayer(playerItem: playerItem)
@@ -70,11 +73,9 @@ import PallyConFPSSDK
 }
 
 extension AppDelegate: PallyConFPSLicenseDelegate {
-    func fpsLicenseDidSuccessAcquiring(contentId: String) {
-        print("License Success : \(contentId)")
-    }
-    
-    func fpsLicense(contentId: String, didFailWithError error: Error) {
-        print("License Fail Error : \(contentId)")
+    func license(result: PallyConResult) {
+        print("Content ID : \(result.contentId)")
+        print("Success    : \(result.isSuccess)")
+        print("Error      : \(result.getPallyConErrorForObjC())")
     }
 }
