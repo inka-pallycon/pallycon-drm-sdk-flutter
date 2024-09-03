@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'pallycon_drm_sdk_ios'
-  s.version          = '1.0.0'
+  s.version          = '1.2.0'
   s.summary          = 'PallyCon DRM Flutter SDK for iOS.'
   s.description      = <<-DESC
 A new Flutter PallyCon FairPlay Streaming(FPS) SDK plugin project.
