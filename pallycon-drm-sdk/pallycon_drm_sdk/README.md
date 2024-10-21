@@ -3,12 +3,12 @@
 
 [![pub package](https://img.shields.io/badge/puv-1.0.0-orange)](https://pub.dartlang.org/packages/)
 
-A Flutter pallycon_drm_sdk plugin which provides easy to apply Multi-DRM(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information. 
+A Flutter pallycon_drm_sdk plugin which provides easy to apply PallyConMulti-DRM SDK(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information. 
 
 ## **support environment**
 
-- Android 5.0 (Lolipop) & Android targetSdkVersion 31 or higher
-- iOS 12.0 higher
+- Android 6.0 (API 23)) & Android targetSdkVersion 34 or higher
+- iOS 14.0 higher
 - This SDK supports ExoPlayer version 2.18.1 on Android.
 
 ## **Important**
@@ -52,8 +52,6 @@ Inside the SDK, the following 4 items are used in relation to user permission.
 
 `PallyCon DRM SDK Flutter` uses `PallyConFPSSDK`. `PallyConFPSSDK` is supposed to be downloaded as `cocoapods`.
 
-### SDK requirements
-- Minimum supported version: 11.2
 
 </details>
 
