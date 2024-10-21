@@ -39,12 +39,15 @@ dependencies:
 #    path: ../../pallycon-drm-sdk/pallycon_drm_sdk
   pallycon_drm_sdk: ^1.1.1
 
-  #BetterPlayer for PallyConDRM
+  # BetterPlayer for PallyConDRM
+  # better_player:
+  #   path: ../../../betterplayer/
   better_player:
-    path: ../../../pallycon-multidrm-flutter-sample/
-#  drm_video:
-#    path: ../../pallycon-drm_video
-#  drm_video: ^0.0.1
+    git:
+      url: https://github.com/inka-pallycon/betterplayer.git
+      ref: master
+
+  win32: ^5.7.0
 
   # GetX state management
   get: ^4.6.5
@@ -61,14 +64,14 @@ dependencies:
 
   dartz: ^0.10.1
 
-  dio: ^4.0.6
+  dio: ^5.7.0
 
-  connectivity_plus: ^2.3.6
+  connectivity_plus: ^6.1.0
 
-  jiffy: ^5.0.0
+  jiffy: ^6.3.0
 
-  get_it: ^7.2.0
-  logger: ^1.1.0
+  get_it: ^8.0.0
+  logger: ^2.4.0
   modal_bottom_sheet: ^3.0.0-pre
 
 dev_dependencies:
@@ -80,7 +83,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
