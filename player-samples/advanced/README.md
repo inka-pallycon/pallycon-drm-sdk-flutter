@@ -47,17 +47,17 @@ advanced
 ### Install package and run
 - Connect Android or iOS device and install package.
 
-    ```
-        player-samples$ cd basic
+    ```bsh
+        player-samples$ cd advanced
         // install package
-        basic$ flutter pub get
+        advanced$ flutter pub get
         // if ios
-        // basic$ cd ios
+        // advanced$ cd ios
         // ios$ pod install
-        // basic$ cd ..
+        // ios$ cd ..
 
         // run
-        basic$ flutter run
+        advanced$ flutter run
     ```
 
 [1]: https://docs.flutter.dev/get-started/codelab

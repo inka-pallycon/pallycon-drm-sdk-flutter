@@ -47,17 +47,17 @@ basic
 ### Install package and run
 - Connect Android or iOS device and install package.
 
-    ```
-        player-samples$ cd advanced
+    ```bsh
+        player-samples$ cd basic
         // install package
-        advanced$ flutter pub get
+        basic$ flutter pub get
         // if ios
-        // advanced$ cd ios
+        // basic$ cd ios
         // ios$ pod install
-        // advanced$ cd ..
+        // ios$ cd ..
 
         // run
-        advanced$ flutter run
+        basic$ flutter run
     ```
 
 
