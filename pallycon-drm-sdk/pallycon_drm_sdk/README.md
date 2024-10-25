@@ -1,182 +1,151 @@
-## **PallyCon DRM SDK** for Flutter Development Guide
+# **PallyCon DRM SDK** for Flutter Development Guide
 
 
-[![pub package](https://img.shields.io/badge/puv-1.0.0-orange)](https://pub.dartlang.org/packages/)
+[![pub package](https://img.shields.io/badge/puv-1.2.0-orange)](https://pub.dartlang.org/packages/)
 
-A Flutter pallycon_drm_sdk plugin which provides easy to apply PallyConMulti-DRM SDK(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information. 
+A Flutter **`pallycon_drm_sdk`** plugin which provides easy to apply [PallyCon Multi-DRM SDK][1] (Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. 
 
-## **support environment**
+This document describes the usage and API of **`pallycon_drm_sdk`**.
+The example of **`pallycon_drm_sdk`** is available on [player-sample][2].
 
-- Android 6.0 (API 23)) & Android targetSdkVersion 34 or higher
-- iOS 14.0 higher
-- This SDK supports ExoPlayer version 2.18.1 on Android.
-
-## **Important**
-
-- To develop using the SDK, you must first sign up for the PallyCon Admin Site and obtain a Site ID.
 
 ## **SDK usage**
 
-To add PallyConDrmSdk to your Flutter app, read the [Installation](https://pub.dev/packages/) instructions. Below are the Android and iOS properties required for PallyConDrmSdk to work properly.
+This section describes the `pallycon_drm_sdk` API provided by flutter.
 
-<details>
-<summary>Android</summary>
+`PallyConDrmSdk` is the main class of pallycon_drm_sdk.
+This class is a wrapper of PallyCon Multi-DRM SDK(Widevine, FairPlay).
 
-**compileSdkVersion**
+> To add **`pallycon_drm_sdk`** to your Flutter app, read the [Flutter Documentation][3] instructions. 
 
-Make sure you set `compileSdkVersion` in "android/app/build.gradle".
-
-```
-android {
-  compileSdkVersion 31
-
-  ...
-}
-```
-
-**Permissions**
-
-Inside the SDK, the following 4 items are used in relation to user permission.
-
-``` xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-```
-
-</details>
-
-<details>
-<summary>iOS</summary>
-
-`PallyCon DRM SDK Flutter` uses `PallyConFPSSDK`. `PallyConFPSSDK` is supposed to be downloaded as `cocoapods`.
-
-
-</details>
 
 ### **Initialize**
 
-```dart
-PallyConDrmSdk.initialize(siteId);
-```
+- Initialization is performed through the `initialize` method of the `PallyConDrmSdk` class.
+  > To develop using the SDK, you must first sign up for the [PallyCon Site][4] and obtain a **`Site ID`**.
 
-### **Set Event**
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  // Initialize the SDK
+  PallyConDrmSdk.initialize(siteId);
+  ```
 
-Register events that occur inside the SDK.
+### **PallyCon DRM SDK Event**
 
-```dart
-PallyConDrmSdk.onPallyConEvent.listen((event) {
-    var downloadState = DownloadStatus.pending;
-    switch (event.eventType) {
-        case PallyConEventType.prepare:
-          // 
-          break;
-        case PallyConEventType.complete:
-          // Called when download is complete
-          break;
-        case PallyConEventType.pause:
-          // Called when downloading is stopped during download
-          break;
-        case PallyConEventType.download:
-          // Called when download starts
-          break;
-        case PallyConEventType.contentDataError:
-          // Called when an error occurs in the parameters passed to the sdk
-          break;
-        case PallyConEventType.drmError:
-          // Called when a license error occurs
-          break;
-        case PallyConEventType.licenseServerError:
-          // Called when an error comes down from the license server
-          break;
-        case PallyConEventType.downloadError:
-          // Called when an error occurs during download
-          break;
-        case PallyConEventType.networkConnectedError:
-          // Called in case of network error
-          break;
-        case PallyConEventType.detectedDeviceTimeModifiedError:
-          // Called when device time is forcibly manipulated
-          break;
-        case PallyConEventType.migrationError:
-          // Called when sdk migration fails
-          break;
-        case PallyConEventType.unknown:
-          // Internally called when an unknown error occurs
-          break;
-  }
-  // content state
-}).onError((error) {
-  // 
-});
-```
+- **PallyConDrmSdk.onPallyConEvent**
+  - Events occurring within the SDK can be received through `PallyConDrmSdk.onPallyConEvent`.
+    ```dart
+    // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+    // PallyConDrmSdk.onPallyConEvent
+    PallyConDrmSdk.onPallyConEvent.listen((event) {
+        // PallyConEventType
+        var pallyconEventType = event.eventType;
+        switch (pallyconEventType) {
+          case PallyConEventType.prepare:
+            break;
+          ...
+        }
+    });
+    ```
 
-When downloading, register a listener to know the size of the currently downloaded data.
-
-```dart
-PallyConDrmSdk.onDownloadProgress.listen((event) {
-    // event.url is url
-    // event.percent is downloaded percent
-});
-```
-
-### **Get content download status**
-
-Get the current download status of the content.
-
-```dart
-PallyConDownloadState downloadState =
-        await PallyConDrmSdk.getDownloadState(PallyConContentConfiguration);
-    switch (downloadState) {
-      case PallyConDownloadState.DOWNLOADING:
-        break;
-      case PallyConDownloadState.PAUSED:
-        break;
-      case PallyConDownloadState.COMPLETED:
-        break;
-      default:
-        break;
+- **PallyConDrmSdk.PallyConEventType**
+  - The event types occurring in PallyConDrmSdk are defined in `PallyConDrmSdk.PallyConEventType`.
+    ```dart
+    /// Event type of PallyCon SDK Event
+    enum PallyConEventType {
+      prepare,          /// Download preparation completed
+      complete,         /// The download completed
+      pause,            /// The download paused
+      remove,           /// The download is removed
+      stop,             /// The download is stop
+      download,         /// The download is start
+      contentDataError, /// Error when the content information to be downloaded is incorrect
+      drmError,         /// License error
+      licenseServerError, /// Server error when issuing license
+      downloadError,      /// Error during download
+      networkConnectedError, /// Error when there is no network connection
+      detectedDeviceTimeModifiedError, /// Error that occurs when the time is forcibly manipulated on an Android device
+      migrationError,     /// Error that occurs when migrating from SDK
+      licenseCipherError, /// Error that occurs when a license cipher from SDK
+      unknown             /// Unknown error type
     }
-```
+    ```
 
-### **Download**
+### **Content Download**
 
-Describes the API required for the content download process.
+- When downloading, register a listener to know the size of the currently downloaded data.
 
-```dart
-// start download
-PallyConDrmSdk.addStartDownload(PallyConContentConfiguration);
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  PallyConDrmSdk.onDownloadProgress.listen((event) {
+      // event.url is url
+      // event.percent is downloaded percent
+  });
+  ```
 
-// cancel downloads
-PallyConDrmSdk.cancelDownloads();
+#### **Get content download status**
 
-// pause downloads
-PallyConDrmSdk.pauseDownloads();
+- Get the current download status of the content.
 
-// resume downloads
-PallyConDrmSdk.resumeDownloads();
-```
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  PallyConDownloadState downloadState = await PallyConDrmSdk.getDownloadState(PallyConContentConfiguration);
+      switch (downloadState) {
+        case PallyConDownloadState.DOWNLOADING:
+          break;
+        case PallyConDownloadState.PAUSED:
+          break;
+        case PallyConDownloadState.COMPLETED:
+          break;
+        default:
+          break;
+      }
+  ```
+
+#### **Download API**
+
+- Describes the API required for the content download process.
+
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  // start download
+  PallyConDrmSdk.addStartDownload(PallyConContentConfiguration);
+
+  // cancel downloads
+  PallyConDrmSdk.cancelDownloads();
+
+  // pause downloads
+  PallyConDrmSdk.pauseDownloads();
+
+  // resume downloads
+  PallyConDrmSdk.resumeDownloads();
+  ```
 
 ### **Remove License or Contents**
 
-Remove the downloaded license and content.
+- Remove the downloaded license and content.
 
-```dart
-// remove downloaded content
-PallyConDrmSdk.removeDownload(PallyConContentConfiguration);
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  // remove downloaded content
+  PallyConDrmSdk.removeDownload(PallyConContentConfiguration);
 
-// remove license for content
-PallyConDrmSdk.removeLicense(PallyConContentConfiguration);
-```
+  // remove license for content
+  PallyConDrmSdk.removeLicense(PallyConContentConfiguration);
+  ```
 
 
 ### **Release**
 
-Called when you end using the SDK.
+- Called when you end using the SDK.
 
-```dart
-PallyConDrmSdk.release();
-```
+  ```dart
+  // player-samples/advanced/lib/features/advanced/presentation/controllers/drm_movie_controller.dart
+  PallyConDrmSdk.release();
+  ```
 
 
+[1]: https://pallycon.com/sdk/
+[2]: ../../player-samples
+[3]: https://docs.flutter.dev/
+[4]: https://login.pallycon.com/
