@@ -1,6 +1,6 @@
 # PallyCon DRM SDK advanced sample
 
-PallyCon DRM SDK advanced sample 은 DRM 컨텐츠의 다운로드 및 스트리밍 재생을 제공하는 샘플 프로젝트입니다.
+The PallyCon DRM SDK advanced sample is a sample project that provides DRM content download and streaming playback.
 
 ## packages
 ```
