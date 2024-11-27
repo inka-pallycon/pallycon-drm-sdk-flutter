@@ -5,6 +5,7 @@ import java.util.HashMap
 
 data class EventMessage(
     val eventType: EventType,
+    val contentId: String,
     val url: String,
     val message: String = "",
     val errorCode: String = ""
@@ -16,6 +17,7 @@ data class EventMessage(
     fun toMap(): MutableMap<String, Any> {
         val event: MutableMap<String, Any> = HashMap()
         event["eventType"] = eventType.toString()
+        event["contentId"] = contentId
         event["url"] = url
 
         if (errorCode.isNotEmpty()) {

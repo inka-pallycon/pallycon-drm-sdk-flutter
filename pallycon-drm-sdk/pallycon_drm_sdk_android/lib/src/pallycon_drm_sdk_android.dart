@@ -155,6 +155,17 @@ class PallyConDrmSdkAndroid extends PallyConDrmSdkPlatform {
   }
 
   @override
+  void stopDownload(PallyConContentConfiguration config) {
+    try {
+      _methodChannel.invokeMethod(
+          'stopDownload', _configToDynamicList(config));
+    } on PlatformException catch (e) {
+      final error = _handlePlatformException(e);
+      throw error;
+    }
+  }
+
+  @override
   void resumeDownloads() {
     try {
       _methodChannel.invokeMethod('resumeDownloads');

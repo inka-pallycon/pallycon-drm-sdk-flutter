@@ -18,13 +18,16 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
 
   static const inkaLicenseUrl =
       "https://license-global.pallycon.com/ri/licenseManager.do";
-  static const certUrl = "https://license-global.pallycon.com/ri/fpsKeyManager.do";
+  static const certUrl =
+      "https://license-global.pallycon.com/ri/fpsKeyManager.do";
   static const siteId = "DEMO";
 
   // var movies = RxList<DrmMovie>([]);
   var pallyConContentConfigs = RxList<PallyConContentConfiguration>([]);
   var downloadPercent = <Tuple2<String, double>>[].obs;
   String checkExtension = ".mpd";
+
+  final Rx<String?> errorMessage = Rx<String?>(null);
 
   @override
   void onInit() {
@@ -71,16 +74,12 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
         case PallyConEventType.contentDataError:
           break;
         case PallyConEventType.drmError:
-          break;
         case PallyConEventType.licenseServerError:
-          break;
         case PallyConEventType.downloadError:
-          break;
         case PallyConEventType.networkConnectedError:
-          break;
         case PallyConEventType.detectedDeviceTimeModifiedError:
-          break;
         case PallyConEventType.migrationError:
+          errorMessage.value = event.message;
           break;
         case PallyConEventType.licenseCipherError:
           break;
@@ -88,8 +87,10 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
           break;
       }
       if (state != null) {
-        state![state!.indexWhere((p0) => p0.url == event.url)].downloadStatus =
-            downloadState;
+        state![state!.indexWhere((p0) => p0.url == event.url)] =
+            state![state!.indexWhere((p0) => p0.url == event.url)].copyWith(
+          downloadStatus: downloadState,
+        );
         update(null, true);
       }
     }).onError((error) {
@@ -103,7 +104,9 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
         var index = state!.indexWhere((p0) => p0.url == event.url);
         if (index >= 0 &&
             state![index].downloadStatus != DownloadStatus.success) {
-          state![index].downloadStatus = DownloadStatus.running;
+          state![index] = state![index].copyWith(
+            downloadStatus: DownloadStatus.running,
+          );
         }
 
         downloadPercent.removeWhere((element) => element.value1 == event.url);
@@ -129,7 +132,8 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
     final Set<String> uniqueContentIds = {};
 
     final filteredMovies = movieList.where((movie) {
-      return p.extension(movie.url) == checkExtension && uniqueContentIds.add(movie.contentId);
+      return p.extension(movie.url) == checkExtension &&
+          uniqueContentIds.add(movie.contentId);
     }).toList();
 
     change(filteredMovies, status: RxStatus.success());
@@ -138,11 +142,12 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
       pallyConContentConfigs.clear();
       for (var i = 0; i < state!.length; i++) {
         var config = PallyConContentConfiguration(
-            state![i].url, state![i].contentId,
-            token: state![i].token,
-            licenseUrl: state![i].licenseServerUrl ?? inkaLicenseUrl,
-            licenseCipherTablePath: state![i].licenseCipherPath,
-            certificateUrl: state![i].licenseCertUrl ?? "$certUrl?siteId=$siteId",
+          state![i].contentId,
+          state![i].url,
+          token: state![i].token,
+          licenseUrl: state![i].licenseServerUrl ?? inkaLicenseUrl,
+          licenseCipherTablePath: state![i].licenseCipherPath,
+          certificateUrl: state![i].licenseCertUrl ?? certUrl,
         );
         pallyConContentConfigs.add(config);
         downloadStateCheck(i);
@@ -184,8 +189,9 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
   getDownloadPercent(DrmMovie drmMovie) {
     var index = downloadPercent.indexWhere((p0) => p0.value1 == drmMovie.url);
     if (index == -1) {
-      state![state!.indexWhere((p0) => p0.url == drmMovie.url)].downloadStatus =
-          DownloadStatus.pending;
+      state![state!.indexWhere((p0) => p0.url == drmMovie.url)] =
+          state![state!.indexWhere((p0) => p0.url == drmMovie.url)]
+              .copyWith(downloadStatus: DownloadStatus.pending);
       return 0;
     }
 
@@ -193,7 +199,10 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
   }
 
   pauseContent(DrmMovie drmMovie) {
-    PallyConDrmSdk.pauseDownloads();
+    final index = pallyConContentConfigs
+        .indexWhere((p0) => p0.contentUrl == drmMovie.url);
+
+    PallyConDrmSdk.stopDownload(pallyConContentConfigs[index]);
   }
 
   removeContent(DrmMovie drmMovie) {
@@ -248,16 +257,20 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
           await PallyConDrmSdk.getDownloadState(pallyConContentConfigs[index]);
       switch (downloadState) {
         case PallyConDownloadState.DOWNLOADING:
-          state![index].downloadStatus = DownloadStatus.running;
+          state![index] =
+              state![index].copyWith(downloadStatus: DownloadStatus.running);
           break;
         case PallyConDownloadState.PAUSED:
-          state![index].downloadStatus = DownloadStatus.pause;
+          state![index] =
+              state![index].copyWith(downloadStatus: DownloadStatus.pause);
           break;
         case PallyConDownloadState.COMPLETED:
-          state![index].downloadStatus = DownloadStatus.success;
+          state![index] =
+              state![index].copyWith(downloadStatus: DownloadStatus.success);
           break;
         default:
-          state![index].downloadStatus = DownloadStatus.pending;
+          state![index] =
+              state![index].copyWith(downloadStatus: DownloadStatus.pending);
           break;
       }
       update(null, true);
@@ -310,6 +323,11 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
     final index = pallyConContentConfigs
         .indexWhere((p0) => p0.contentUrl == drmMovie.url);
     return pallyConContentConfigs[index];
+  }
+
+  int getIndex(DrmMovie drmMovie) {
+    return pallyConContentConfigs
+        .indexWhere((p0) => p0.contentUrl == drmMovie.url);
   }
 
   @override

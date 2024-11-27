@@ -13,8 +13,8 @@ class MockPallyConDrmSdkPlatform
   }
 
   @override
-  void cancleDownload(PallyConContentConfiguration config) {
-    // TODO: implement cancleDownload
+  void stopDownload(PallyConContentConfiguration config) {
+    // TODO: implement stopDownload
   }
 
   @override
@@ -30,27 +30,8 @@ class MockPallyConDrmSdkPlatform
   }
 
   @override
-  Future<bool> isDownloadContent(PallyConContentConfiguration config) {
-    // TODO: implement isDownloadContent
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement onDownloadChanged
-  Stream<PallyConDownload> get onDownloadChanged => throw UnimplementedError();
-
-  @override
-  // TODO: implement onDrmMessage
-  Stream<String> get onDrmMessage => throw UnimplementedError();
-
-  @override
   void pauseDownloads() {
     // TODO: implement pauseDownloads
-  }
-
-  @override
-  void removeAllDownloads() {
-    // TODO: implement removeAllDownloads
   }
 
   @override
@@ -99,16 +80,6 @@ class MockPallyConDrmSdkPlatform
   }
 
   @override
-  void cancelDownloadTask(PallyConContentConfiguration config) {
-    // TODO: implement cancelDownloadTask
-  }
-
-  @override
-  void resumeDownloadTask(PallyConContentConfiguration config) {
-    // TODO: implement resumeDownloadTask
-  }
-
-  @override
   Future<bool> migrateDatabase(PallyConContentConfiguration config) {
     // TODO: implement migrateDatabase
     throw UnimplementedError();
@@ -134,7 +105,7 @@ class MockPallyConDrmSdkPlatform
 }
 
 void main() {
-  final PallyConDrmSdkPlatform initialPlatform = PallyConDrmSdkPlatform.instance;
+  // final PallyConDrmSdkPlatform initialPlatform = PallyConDrmSdkPlatform.instance;
 
   test('getPlatformVersion', () async {
   });

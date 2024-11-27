@@ -3,7 +3,7 @@ package com.pallycon.pallycon_drm_sdk_android.sdk
 import DownloadProgressEvent
 import PallyConEvent
 import android.content.Context
-import com.google.android.exoplayer2.C
+import androidx.media3.common.C
 import com.google.gson.Gson
 import com.pallycon.pallycon_drm_sdk_android.db.DatabaseManager
 import com.pallycon.pallycon_drm_sdk_android.models.*
@@ -18,7 +18,7 @@ import com.pallycon.widevine.track.PallyConDownloaderTracks
 import kotlinx.coroutines.*
 
 
-class PallyConSdk constructor(val context: Context) {
+class PallyConSdk(val context: Context) {
     companion object {
         private var instance: PallyConSdk? = null
 
@@ -38,127 +38,123 @@ class PallyConSdk constructor(val context: Context) {
     private val contentDataList = mutableListOf<ContentData>()
 
     private val listener: PallyConEventListener = object : PallyConEventListener {
-        override fun onCompleted(currentUrl: String?) {
-            currentUrl?.let {
-                instance?.pallyConEvent?.sendPallyConEvent(
-                    currentUrl,
-                    EventType.Completed,
-                    "download completed"
-                )
-            }
+        override fun onCompleted(contentData: com.pallycon.widevine.model.ContentData) {
+            instance?.pallyConEvent?.sendPallyConEvent(
+                contentData,
+                EventType.Completed,
+                "download completed"
+            )
         }
 
-        override fun onFailed(currentUrl: String?, e: PallyConException?) {
-            currentUrl?.let { url ->
-                when (e) {
-                    is PallyConException.ContentDataException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.ContentDataError,
-                            e.msg
-                        )
-
-                    is PallyConException.DrmException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(url, EventType.DrmError, e.msg)
-
-                    is PallyConException.DownloadException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.DownloadError,
-                            e.msg
-                        )
-
-                    is PallyConException.NetworkConnectedException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.NetworkConnectedError,
-                            e.msg
-                        )
-
-                    is PallyConException.DetectedDeviceTimeModifiedException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.DetectedDeviceTimeModifiedError,
-                            e.msg
-                        )
-
-                    is PallyConException.MigrationException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.MigrationError,
-                            e.msg
-                        )
-                    is PallyConException.PallyConLicenseCipherException ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url,
-                            EventType.LicenseCipherError,
-                            e.msg
-                        )
-                    else ->
-                        instance?.pallyConEvent?.sendPallyConEvent(
-                            url, EventType.UnknownError,
-                            e?.msg ?: "unknown error"
-                        )
-                }
-            }
+        override fun onProgress(
+            contentData: com.pallycon.widevine.model.ContentData,
+            percent: Float,
+            downloadedBytes: Long,
+        ) {
+            instance?.progressEvent?.sendProgressEvent(contentData, percent, downloadedBytes)
         }
 
-        override fun onFailed(currentUrl: String?, e: PallyConLicenseServerException?) {
-            currentUrl?.let { url ->
-                e?.let {
-                    instance?.pallyConEvent?.sendPallyConEvent(
-                        url, EventType.LicenseServerError,
-                        it.message(), it.errorCode().toString()
-                    )
-                }
-            }
-
+        override fun onStopped(contentData: com.pallycon.widevine.model.ContentData) {
+            instance?.pallyConEvent?.sendPallyConEvent(contentData, EventType.Stop, "download stop")
         }
 
-        override fun onPaused(currentUrl: String?) {
-            contentDataList.forEach { content ->
-                content.url?.let { url ->
-                    instance?.pallyConEvent?.sendPallyConEvent(
-                        url,
-                        EventType.Paused,
-                        "download paused"
-                    )
-                }
-            }
-        }
-
-        override fun onProgress(currentUrl: String?, percent: Float, downloadedBytes: Long) {
-            currentUrl?.let { url ->
-                instance?.progressEvent?.sendProgressEvent(url, percent, downloadedBytes)
-            }
-        }
-
-        override fun onRemoved(currentUrl: String?) {
-            currentUrl?.let { url ->
-                instance?.pallyConEvent?.sendPallyConEvent(
-                    url,
-                    EventType.Removed,
-                    "downloaded content is removed"
-                )
-            }
-        }
-
-        override fun onRestarting(currentUrl: String?) {
+        override fun onRestarting(contentData: com.pallycon.widevine.model.ContentData) {
             print("onRestarting")
         }
 
-        override fun onStopped(currentUrl: String?) {
-            currentUrl?.let { url ->
-                instance?.pallyConEvent?.sendPallyConEvent(url, EventType.Stop, "download stop")
+        override fun onRemoved(contentData: com.pallycon.widevine.model.ContentData) {
+            instance?.pallyConEvent?.sendPallyConEvent(
+                contentData,
+                EventType.Removed,
+                "downloaded content is removed"
+            )
+        }
+
+        override fun onPaused(contentData: com.pallycon.widevine.model.ContentData) {
+            contentDataList.forEach { content ->
+                instance?.pallyConEvent?.sendPallyConEvent(
+                    content,
+                    EventType.Paused,
+                    "download paused"
+                )
+            }
+        }
+
+        override fun onFailed(
+            contentData: com.pallycon.widevine.model.ContentData,
+            e: PallyConException?,
+        ) {
+            when (e) {
+                is PallyConException.ContentDataException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.ContentDataError,
+                        e.msg
+                    )
+
+                is PallyConException.DrmException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(contentData, EventType.DrmError, e.msg)
+
+                is PallyConException.DownloadException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.DownloadError,
+                        e.msg
+                    )
+
+                is PallyConException.NetworkConnectedException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.NetworkConnectedError,
+                        e.msg
+                    )
+
+                is PallyConException.DetectedDeviceTimeModifiedException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.DetectedDeviceTimeModifiedError,
+                        e.msg
+                    )
+
+                is PallyConException.MigrationException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.MigrationError,
+                        e.msg
+                    )
+                is PallyConException.PallyConLicenseCipherException ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData,
+                        EventType.LicenseCipherError,
+                        e.msg
+                    )
+                else ->
+                    instance?.pallyConEvent?.sendPallyConEvent(
+                        contentData, EventType.UnknownError,
+                        e?.msg ?: "unknown error"
+                    )
+            }
+        }
+
+        override fun onFailed(
+            contentData: com.pallycon.widevine.model.ContentData,
+            e: PallyConLicenseServerException?,
+        ) {
+            e?.let {
+                instance?.pallyConEvent?.sendPallyConEvent(
+                    contentData, EventType.LicenseServerError,
+                    it.message(), it.errorCode().toString()
+                )
             }
         }
     }
 
     fun setPallyConEvent(pallyConEvent: PallyConEvent?) {
         this.pallyConEvent = pallyConEvent
-        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
-            sdk.setPallyConEventListener(listener)
-        }
+
+//        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
+//            sdk.setPallyConEventListener(listener)
+//        }
     }
 
     fun setDownloadProgressEvent(downloadProgressEvent: DownloadProgressEvent?) {
@@ -168,10 +164,13 @@ class PallyConSdk constructor(val context: Context) {
     fun initialize(siteId: String) {
         this.siteId = siteId
 
+//        PallyConWvSDK.removePallyConEventListener(listener)
+        PallyConWvSDK.addPallyConEventListener(listener)
         loadDownloaded()
     }
 
     fun release() {
+        PallyConWvSDK.removePallyConEventListener(listener)
         wvSDKList.forEach { sdk ->
             sdk.value.release()
         }
@@ -207,9 +206,9 @@ class PallyConSdk constructor(val context: Context) {
             }
         }
 
-        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
-            sdk.setPallyConEventListener(listener)
-        }
+//        wvSDKList.entries.firstOrNull()?.let { (_, sdk) ->
+//            sdk.setPallyConEventListener(listener)
+//        }
     }
 
     private fun saveDownloadedContent() {
@@ -233,7 +232,8 @@ class PallyConSdk constructor(val context: Context) {
                     }
                 }, { e ->
                     pallyConEvent?.sendPallyConEvent(
-                        config.contentUrl!!,
+                        config.contentId,
+                        config.contentUrl,
                         EventType.DetectedDeviceTimeModifiedError,
                         e.msg
                     )
@@ -270,26 +270,10 @@ class PallyConSdk constructor(val context: Context) {
             contentDataList.add(data)
         }
 
-        var isFirstDownload = false
-        if (wvSDKList.isEmpty()) {
-            isFirstDownload = true
-        }
-
-//        if (!wvSDKList.containsKey(config.contentId) && config.contentId != null) {
-//            wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
-//                context,
-//                data
-//            )
-//        }
-
         wvSDKList[config.contentId!!] = PallyConWvSDK.createPallyConWvSDK(
             context,
             data
         )
-
-        if (isFirstDownload) {
-            wvSDKList[config.contentId]?.setPallyConEventListener(listener)
-        }
 
         wvSDKList[config.contentId]?.also { sdk ->
             sdk.updateSecure({
@@ -305,21 +289,24 @@ class PallyConSdk constructor(val context: Context) {
                 when (e) {
                     is PallyConException.NetworkConnectedException ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl ?: "",
+                            config.contentId,
+                            config.contentUrl,
                             EventType.NetworkConnectedError,
                             e.msg
                         )
 
                     is PallyConException.ContentDataException ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl ?: "",
+                            config.contentId,
+                            config.contentUrl,
                             EventType.ContentDataError,
                             e.msg
                         )
 
                     else ->
                         pallyConEvent?.sendPallyConEvent(
-                            config.contentUrl ?: "",
+                            config.contentId,
+                            config.contentUrl,
                             EventType.DownloadError,
                             e.msg
                         )
@@ -341,13 +328,23 @@ class PallyConSdk constructor(val context: Context) {
                 sdk.download(tracks)
             } catch (e: PallyConException.ContentDataException) {
                 pallyConEvent?.sendPallyConEvent(
-                    config.contentUrl ?: "",
+                    config.contentId,
+                    config.contentUrl,
                     EventType.ContentDataError,
                     e.msg
                 )
             } catch (e: PallyConException.DownloadException) {
-                pallyConEvent?.sendPallyConEvent(config.contentUrl ?: "", EventType.DownloadError, e.msg)
+                pallyConEvent?.sendPallyConEvent(config.contentId, config.contentUrl,
+                    EventType.DownloadError, e.msg)
             }
+        }
+    }
+
+    fun stopDownload(config: PallyConContentConfiguration) {
+        val data = createContentData(config)
+
+        wvSDKList[config.contentId]?.also { sdk ->
+            sdk.stop()
         }
     }
 
@@ -381,10 +378,10 @@ class PallyConSdk constructor(val context: Context) {
                 wvSDKList[contentId]!!.remove()
                 true
             } catch (e: PallyConException.ContentDataException) {
-                pallyConEvent?.sendPallyConEvent(url, EventType.ContentDataError, e.msg)
+                pallyConEvent?.sendPallyConEvent(contentId, url, EventType.ContentDataError, e.msg)
                 false
             } catch (e: PallyConException.DownloadException) {
-                pallyConEvent?.sendPallyConEvent(url, EventType.DownloadError, e.msg)
+                pallyConEvent?.sendPallyConEvent(contentId, url, EventType.DownloadError, e.msg)
                 false
             }
         } else {
@@ -398,10 +395,10 @@ class PallyConSdk constructor(val context: Context) {
                 wvSDKList[contentId]!!.removeLicense()
                 true
             } catch (e: PallyConException.ContentDataException) {
-                pallyConEvent?.sendPallyConEvent(url, EventType.ContentDataError, e.msg)
+                pallyConEvent?.sendPallyConEvent(contentId, url, EventType.ContentDataError, e.msg)
                 false
             } catch (e: PallyConException.DownloadException) {
-                pallyConEvent?.sendPallyConEvent(url, EventType.DownloadError, e.msg)
+                pallyConEvent?.sendPallyConEvent(contentId, url, EventType.DownloadError, e.msg)
                 false
             }
         } else {
@@ -464,6 +461,7 @@ class PallyConSdk constructor(val context: Context) {
                     continuation.resume(true, null)
                 }, { e ->
                     pallyConEvent?.sendPallyConEvent(
+                        "",
                         wvSDKList.entries.first().key,
                         EventType.DrmError,
                         e.msg
@@ -472,7 +470,8 @@ class PallyConSdk constructor(val context: Context) {
                 })
             } else {
                 pallyConEvent?.sendPallyConEvent(
-                    "url nothing",
+                    "",
+                    "",
                     EventType.ContentDataError,
                     "No content has been downloaded."
                 )
@@ -489,6 +488,7 @@ class PallyConSdk constructor(val context: Context) {
                 }, { e ->
                     pallyConEvent?.sendPallyConEvent(
                         wvSDKList.entries.first().key,
+                        "",
                         EventType.DrmError,
                         e.msg
                     )
@@ -496,7 +496,8 @@ class PallyConSdk constructor(val context: Context) {
                 })
             } else {
                 pallyConEvent?.sendPallyConEvent(
-                    "url nothing",
+                    "",
+                    "",
                     EventType.ContentDataError,
                     "No content has been downloaded."
                 )
@@ -509,11 +510,10 @@ class PallyConSdk constructor(val context: Context) {
         if (siteId == null) {
             print("initialize function must be executed first.")
             return ContentData(
-                config.contentId,
-                config.contentUrl,
-                null,
-                null,
-                config.contentCookie
+                contentId = config.contentId,
+                url = config.contentUrl,
+                drmConfig = null,
+                cookie = config.contentCookie
             )
         }
 
@@ -549,7 +549,6 @@ class PallyConSdk constructor(val context: Context) {
         return ContentData(
             contentId = config.contentId,
             url = config.contentUrl,
-            localPath = "",
             drmConfig = drmConfig,
             cookie = config.contentCookie,
             httpHeaders = contentHeaders

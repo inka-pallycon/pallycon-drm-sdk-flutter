@@ -32,7 +32,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
 
-  pallycon_drm_sdk: ^1.0.0
+  pallycon_drm_sdk: ^1.1.4
 #    path: ../../pallycon-drm-sdk/pallycon_drm_sdk
 
 dev_dependencies:

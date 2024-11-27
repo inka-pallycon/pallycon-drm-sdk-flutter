@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MovieContainer extends StatelessWidget {
-  const MovieContainer({Key? key, required this.child}) : super(key: key);
+  const MovieContainer({super.key, required this.child});
 
   final Widget child;
 

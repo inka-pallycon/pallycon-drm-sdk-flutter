@@ -8,12 +8,14 @@
 import Foundation
 
 class EventMessage {
+    var contentId: String
     var url: String
     var eventType: PallyConEventType
     var message: String
     var errorCode: String
     
-    init(url: String, eventType: PallyConEventType, message: String, errorCode: String) {
+    init(contentId: String, url: String, eventType: PallyConEventType, message: String, errorCode: String) {
+        self.contentId = contentId
         self.url = url
         self.eventType = eventType
         self.message = message
@@ -24,6 +26,7 @@ class EventMessage {
         var event = [String: String]()
         
         event["eventType"] = eventType.name
+        event["contentId"] = contentId
         event["url"] = url
 
         if (!errorCode.isEmpty) {

@@ -76,7 +76,7 @@ class PallyConSdk: NSObject {
         self.progressEvent = eventSink
     }
 
-    public func sendPallyConEvent(url: String, eventType: PallyConEventType, message: String, errorCode: String = "") {
+    public func sendPallyConEvent(contentId: String, url: String, eventType: PallyConEventType, message: String, errorCode: String = "") {
         guard let event = pallyConEvent else {
             return
         }
@@ -84,12 +84,12 @@ class PallyConSdk: NSObject {
         if (!Thread.isMainThread) {
             DispatchQueue.main.sync {
                 event(
-                    EventMessage(url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
+                    EventMessage(contentId: contentId, url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
                 )
             }
         } else {
             event(
-                EventMessage(url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
+                EventMessage(contentId: contentId, url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
             )
         }
     }
@@ -153,12 +153,12 @@ class PallyConSdk: NSObject {
         }
 
         guard let contentUrl:URL = URL(string: url) else {
-            sendPallyConEvent(url: url, eventType: PallyConEventType.downloadError, message: "String to URL convert Error!", errorCode: "")
+            sendPallyConEvent(contentId: contentId, url: url, eventType: PallyConEventType.downloadError, message: "String to URL convert Error!", errorCode: "")
             return
         }
 
         guard let downloadTask = fpsSdk?.createDownloadTask(url: contentUrl, token: token!, downloadDelegate: self) else {
-            self.sendPallyConEvent(url: url, eventType: PallyConEventType.downloadError, message: "DownloadTask not Create! ", errorCode: "")
+            self.sendPallyConEvent(contentId: contentId, url: url, eventType: PallyConEventType.downloadError, message: "DownloadTask not Create! ", errorCode: "")
             return
         }
 
@@ -169,6 +169,18 @@ class PallyConSdk: NSObject {
         downloadTaskMap[downloadTask] = contentInfo
         downloadTask.resume()
     }
+
+    public func stopDownload(url: String, contentId: String, token: String?, customData: String?, httpHeaders: Dictionary<String, String>?, cookie: String?, drmLicenseUrl: String?, appleCertUrl: String?) {
+    //        sendPallyConEvent(url: url, eventType: PallyConEventType.complete, message: "Complete")
+            for (task, downloadContent) in downloadTaskMap {
+                print("download task \(downloadContent.contentId)")
+                if downloadContent.url == url {
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    task.resume()
+                    return
+                }
+            }
+        }
 
     public func resumeAll() {
         for task in downloadTaskMap.keys {
@@ -189,7 +201,9 @@ class PallyConSdk: NSObject {
             if downloadTaskMap[task]?.downloadState == DownloadState.downloading {
                 task.cancel()
                 downloadTaskMap[task]?.downloadState = DownloadState.pause
-                self.sendPallyConEvent(url: downloadTaskMap[task]!.url,
+                self.sendPallyConEvent(
+                                        contentId: downloadTaskMap[task]!.contentId,
+                                        url: downloadTaskMap[task]!.url,
                                        eventType: PallyConEventType.pause,
                                        message: "User Downloaded Content Pause")
             } else {
@@ -225,7 +239,7 @@ class PallyConSdk: NSObject {
         }
         self.deleteDowndloadedContent(for: downloadedContent)
         downloadedContentMap.removeValue(forKey: url)
-        self.sendPallyConEvent(url: url, eventType: PallyConEventType.remove, message: "Remove Downloaded Content")
+        self.sendPallyConEvent(contentId: downloadedContent.contentId, url: url, eventType: PallyConEventType.remove, message: "Remove Downloaded Content")
     }
 
     public func removeLicense(url: String) {
@@ -300,11 +314,11 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
                     break
                 }
             }
-            self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.unknownError,
+            self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.unknownError,
                                    message: "download stop : \(String(describing: localPath))",
                                    errorCode: "")
         } else {
-            self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.pause,
+            self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.pause,
                                    message: "user download stop : \(String(describing: localPath))",
                                    errorCode: "")
         }
@@ -324,7 +338,7 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
             }
         }
 
-        self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.complete, message: "\(location.absoluteString)", errorCode: "")
+        self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.complete, message: "\(location.absoluteString)", errorCode: "")
 
         return
     }
@@ -365,7 +379,7 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
 extension PallyConSdk: PallyConFPSLicenseDelegate {
     func fpsLicenseDidSuccessAcquiring(contentId: String) {
         print("License Success : \(contentId)")
-        self.sendPallyConEvent(url: contentId, eventType: PallyConEventType.complete, message: contentId, errorCode: "")
+        self.sendPallyConEvent(contentId: contentId, url: contentId, eventType: PallyConEventType.complete, message: contentId, errorCode: "")
     }
 
     func fpsLicense(contentId: String, didFailWithError error: Error) {
@@ -399,7 +413,7 @@ extension PallyConSdk: PallyConFPSLicenseDelegate {
             print("Error: \(error). Unkown")
         }
 
-        self.sendPallyConEvent(url: contentId, eventType: eventType, message: errorMessage, errorCode: "")
+        self.sendPallyConEvent(contentId: contentId, url: contentId, eventType: eventType, message: errorMessage, errorCode: "")
     }
 }
 

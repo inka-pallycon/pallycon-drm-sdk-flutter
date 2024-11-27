@@ -59,6 +59,8 @@ public class SwiftPallyConDrmSdkIosPlugin: NSObject, FlutterPlugin {
             methodCallHandler?.onGetDownloadState(call, result: result)
         case "addStartDownload" :
             methodCallHandler?.onAddDownload(call, result: result)
+        case "stopDownload" :
+            methodCallHandler?.onStopDownload(call, result: result)
         case "resumeDownloads" :
             methodCallHandler?.onResumeDownloads()
         case "cancelDownloads" :

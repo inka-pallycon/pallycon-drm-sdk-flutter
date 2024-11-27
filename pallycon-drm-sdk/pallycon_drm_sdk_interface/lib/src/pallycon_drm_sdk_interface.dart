@@ -59,6 +59,10 @@ abstract class PallyConDrmSdkPlatform extends PlatformInterface {
     throw UnimplementedError('addStartDownload() has not been implemented.');
   }
 
+  void stopDownload(PallyConContentConfiguration config) {
+    throw UnimplementedError('stopDownload() has not been implemented.');
+  }
+
   void resumeDownloads() {
     throw UnimplementedError('resumeDownloads() has not been implemented.');
   }

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import java.util.HashMap
 
 data class ProgressMessage(
+    val contentId: String,
     val url: String,
     val percent: Float,
     val downloadedBytes: Long
@@ -14,6 +15,7 @@ data class ProgressMessage(
 
     fun toMap(): MutableMap<String, Any> {
         val event: MutableMap<String, Any> = HashMap()
+        event["contentId"] = contentId
         event["url"] = url
         event["percent"] = percent
         event["downloadedBytes"] = downloadedBytes

@@ -1,20 +1,14 @@
-buildscript {
-    ext.kotlin_version = '1.6.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
+            credentials {
+                username = "yuyu04@naver.com"
+                password = "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"
+            }
+        }
     }
 }
 
@@ -26,6 +20,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

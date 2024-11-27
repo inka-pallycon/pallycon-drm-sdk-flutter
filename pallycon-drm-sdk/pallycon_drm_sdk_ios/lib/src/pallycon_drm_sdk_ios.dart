@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pallycon_drm_sdk_interface/pallycon_drm_sdk_interface.dart';
 
@@ -148,6 +147,16 @@ class PallyConDrmSdkIos extends PallyConDrmSdkPlatform {
   void addStartDownload(PallyConContentConfiguration config) {
     try {
       _methodChannel.invokeMethod('addStartDownload', _configToDynamicList(config));
+    } on PlatformException catch (e) {
+      final error = _handlePlatformException(e);
+      throw error;
+    }
+  }
+
+  @override
+  void stopDownload(PallyConContentConfiguration config) {
+    try {
+      _methodChannel.invokeMethod('stopDownload', _configToDynamicList(config));
     } on PlatformException catch (e) {
       final error = _handlePlatformException(e);
       throw error;

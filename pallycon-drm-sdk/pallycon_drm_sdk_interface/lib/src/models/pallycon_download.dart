@@ -1,6 +1,3 @@
-import '../enums/pallycon_download_state.dart';
-import '../models/models.dart';
-
 class PallyConDownload {
   const PallyConDownload(
       {required this.url,

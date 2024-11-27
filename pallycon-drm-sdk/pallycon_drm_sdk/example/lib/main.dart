@@ -41,8 +41,8 @@ class _MyAppState extends State<MyApp> {
       await _pallyConDrmSdk.initialize("DEMO");
 
       var config = PallyConContentConfiguration(
-        "https://contents.pallycon.com/DEMO/app/big_buck_bunny/dash/stream.mpd",
         "bunny",
+        "https://contents.pallycon.com/DEMO/app/big_buck_bunny/dash/stream.mpd",
         token: "eyJkcm1fdHlwZSI6IldpZGV2aW5lIiwic2l0ZV9pZCI6IkRFTU8iLCJ1c2VyX2lkIjoidGVzdFVzZXIiLCJjaWQiOiJkZW1vLWJiYi1zaW1wbGUiLCJwb2xpY3kiOiI5V3FJV2tkaHB4VkdLOFBTSVljbkp1dUNXTmlOK240S1ZqaTNpcEhIcDlFcTdITk9uYlh6QS9pdTdSa0Vwbk85c0YrSjR6R000ZkdCMzVnTGVORGNHYWdPY1Q4Ykh5c3k0ZHhSY2hYV2tUcDVLdXFlT0ljVFFzM2E3VXBnVVdTUCIsInJlc3BvbnNlX2Zvcm1hdCI6Im9yaWdpbmFsIiwia2V5X3JvdGF0aW9uIjpmYWxzZSwidGltZXN0YW1wIjoiMjAyMi0wNi0xOVQyMzo0NjoyOFoiLCJoYXNoIjoid3dWSFVhNnRNT1BUUmZmNkRWZUVua0Z0cWMvMkJPRkpGUzU1aE5iNkp2ND0ifQ==",
         licenseUrl: "https://license.pallycon.com/ri/licenseManager.do",
       );

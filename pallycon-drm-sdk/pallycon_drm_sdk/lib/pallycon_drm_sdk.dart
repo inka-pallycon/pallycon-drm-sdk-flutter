@@ -54,6 +54,11 @@ class PallyConDrmSdk {
     PallyConDrmSdkPlatform.instance.addStartDownload(config);
   }
 
+  /// Starts the service in not started already and stop download.
+  static void stopDownload(PallyConContentConfiguration config) {
+    PallyConDrmSdkPlatform.instance.stopDownload(config);
+  }
+
   /// Starts the service if not started already and resumes all downloads.
   static void resumeDownloads() {
     PallyConDrmSdkPlatform.instance.resumeDownloads();

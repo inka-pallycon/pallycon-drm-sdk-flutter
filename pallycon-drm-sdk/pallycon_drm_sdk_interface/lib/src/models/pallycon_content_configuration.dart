@@ -1,8 +1,8 @@
 import '../enums/drm_type.dart';
 
 class PallyConContentConfiguration {
-  final String contentUrl;
   final String contentId;
+  final String contentUrl;
   final DRMType? drmType;
   final String? token;
   final String? customData;
@@ -14,19 +14,16 @@ class PallyConContentConfiguration {
   final String certificateUrl;
   final String? licenseCipherTablePath;
 
-  PallyConContentConfiguration(
-      this.contentUrl,
-      this.contentId,
+  PallyConContentConfiguration(this.contentId, this.contentUrl,
       {this.drmType,
-        this.token,
-        this.customData,
-        this.contentCookie,
-        this.contentHttpHeaders,
-        this.licenseCookie,
-        this.licenseHttpHeaders,
-        this.licenseUrl = "https://license-global.pallycon.com/ri/licenseManager.do",
-        this.certificateUrl = "",
-        this.licenseCipherTablePath
-      });
-
+      this.token,
+      this.customData,
+      this.contentCookie,
+      this.contentHttpHeaders,
+      this.licenseCookie,
+      this.licenseHttpHeaders,
+      this.licenseUrl =
+          "https://license-global.pallycon.com/ri/licenseManager.do",
+      this.certificateUrl = "",
+      this.licenseCipherTablePath});
 }

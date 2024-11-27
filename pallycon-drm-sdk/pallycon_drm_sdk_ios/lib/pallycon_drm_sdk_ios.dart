@@ -1,7 +1,7 @@
 export 'package:pallycon_drm_sdk_interface/pallycon_drm_sdk_interface.dart'
     show
     DRMType,
-    PallyConDownloadStatus,
+    PallyConDownloadState,
     PallyConContentConfiguration,
     PallyConDownload;
 

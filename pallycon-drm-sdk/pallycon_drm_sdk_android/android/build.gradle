@@ -2,25 +2,28 @@ group 'com.pallycon.pallycon_drm_sdk_android'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
-    ext.exo_version = '2.18.1'
-    ext.core_ktx_version = '1.8.0'
-    ext.coroutines_version = '1.6.0'
-    ext.gson_version = '2.10'
-    ext.crypto_ktx_verion = '1.1.0-alpha03'
-    ext.pallycon_version = '3.4.6'
+    ext.kotlin_version = '1.8.0'
+    ext.media3_version = '1.4.1'
+    ext.core_ktx_version = '1.13.1'
+    ext.coroutines_version = '1.8.1'
+    ext.gson_version = '2.11.0'
+    ext.crypto_ktx_verion = '1.1.0-alpha06'
+    ext.pallycon_version = '4.3.2'
     ext.data_binding_version = '3.5.0'
     repositories {
         google()
         mavenCentral()
-//        mavenLocal()
         maven {
-            url 'https://pkgs.dev.azure.com/mraws/PallyCon/_packaging/PallyConWidevineSDK/maven/v1'
+            url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
+            credentials {
+                username = "GitHub username"
+                password = "GitHub access token"
+            }
         }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -29,15 +32,22 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
+            credentials {
+                username = "yuyu04@naver.com"
+                password = "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"
+            }
+        }
+//        mavenLocal()
 //        maven { url 'https://jitpack.io' }
 //        maven {
 //            url 'https://pkgs.dev.azure.com/mraws/PallyCon/_packaging/PallyConWidevineSDK/maven/v1'
 //        }
-        flatDir {
+//        flatDir {
 //            dirs "$projectDir/libs"
-            dirs project(":pallycon_drm_sdk_android").file('libs')
-        }
-//        mavenLocal()
+//            dirs project(":pallycon_drm_sdk_android").file('libs')
+//        }
     }
 }
 
@@ -46,7 +56,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
+    namespace "com.pallycon.pallycon_drm_sdk_android"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -68,8 +79,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     // PallyCon Sdk
     implementation "com.pallycon:widevine:$pallycon_version"
 
@@ -83,7 +92,10 @@ dependencies {
     // Secure
     implementation "androidx.security:security-crypto-ktx:$crypto_ktx_verion"
 
-    implementation "com.google.android.exoplayer:exoplayer-core:$exo_version"
-    implementation "com.google.android.exoplayer:exoplayer-dash:$exo_version"
-    implementation "com.google.android.exoplayer:extension-okhttp:$exo_version"
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-dash:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-rtsp:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-smoothstreaming:$media3_version"
+    implementation "androidx.media3:media3-datasource-okhttp:$media3_version"
 }

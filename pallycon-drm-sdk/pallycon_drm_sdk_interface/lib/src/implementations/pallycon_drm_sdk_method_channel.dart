@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../models/models.dart';
@@ -20,14 +19,12 @@ class MethodChannelPallyConDrmSdk extends PallyConDrmSdkPlatform {
 
   @override
   Future<void> initialize(String siteId) async {
-    await _methodChannel
-        .invokeMethod('initialize', {'siteId': siteId});
+    await _methodChannel.invokeMethod('initialize', {'siteId': siteId});
   }
 
   @override
   void release() {
-    _methodChannel
-        .invokeMethod('release');
+    _methodChannel.invokeMethod('release');
   }
 
   @override
@@ -40,8 +37,8 @@ class MethodChannelPallyConDrmSdk extends PallyConDrmSdkPlatform {
   @override
   Future<PallyConDownloadState> getDownloadState(
       PallyConContentConfiguration config) async {
-    final String state = await _methodChannel
-        .invokeMethod('getDownloadState', _configToDynamicList(config));
+    final String state = await _methodChannel.invokeMethod(
+        'getDownloadState', _configToDynamicList(config));
 
     var pallyConDownloadState = PallyConDownloadState.NOT;
     switch (state) {
@@ -120,7 +117,13 @@ class MethodChannelPallyConDrmSdk extends PallyConDrmSdkPlatform {
   // Download
   @override
   void addStartDownload(PallyConContentConfiguration config) {
-    _methodChannel.invokeMethod('addStartDownload', _configToDynamicList(config));
+    _methodChannel.invokeMethod(
+        'addStartDownload', _configToDynamicList(config));
+  }
+
+  @override
+  void stopDownload(PallyConContentConfiguration config) {
+    _methodChannel.invokeMethod('stopDownload', _configToDynamicList(config));
   }
 
   @override
@@ -192,11 +195,10 @@ class MethodChannelPallyConDrmSdk extends PallyConDrmSdkPlatform {
     }
   }
 
-  dynamic _configToDynamicList(
-      PallyConContentConfiguration config) {
+  dynamic _configToDynamicList(PallyConContentConfiguration config) {
     return {
-      'url': config.contentUrl,
       'contentId': config.contentId,
+      'url': config.contentUrl,
       'drmType': config.drmType,
       'token': config.token,
       'customData': config.customData,

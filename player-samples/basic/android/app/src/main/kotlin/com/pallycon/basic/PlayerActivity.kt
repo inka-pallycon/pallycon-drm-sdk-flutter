@@ -5,18 +5,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.SurfaceView
 import android.widget.Toast
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.ui.PlayerView
 import com.google.gson.Gson
 import com.pallycon.widevine.exception.PallyConException
 import com.pallycon.widevine.exception.PallyConLicenseServerException
 import com.pallycon.widevine.model.ContentData
 import com.pallycon.widevine.model.DownloadState
-import com.pallycon.widevine.model.PallyConDrmConfigration
 import com.pallycon.widevine.model.PallyConEventListener
 import com.pallycon.widevine.sdk.PallyConWvSDK
 
@@ -24,7 +23,7 @@ class PlayerActivity : Activity() {
 
     private var exoPlayer: ExoPlayer? = null
     private var wvSDK: PallyConWvSDK? = null
-    private var playerView: StyledPlayerView? = null
+    private var playerView: PlayerView? = null
 
     companion object {
         const val CONTENT_DATA = "CONTENT_DATA"
@@ -53,54 +52,45 @@ class PlayerActivity : Activity() {
                 this,
                 contentData
             )
-            wvSDK?.setPallyConEventListener(object : PallyConEventListener {
-                override fun onCompleted(currentUrl: String?) {
-                    print("onComplete : ${currentUrl}")
+
+            PallyConWvSDK.addPallyConEventListener(object : PallyConEventListener {
+                override fun onCompleted(contentData: ContentData) {
+                    print("onComplete : ${contentData.contentId}")
                 }
 
-                override fun onFailed(currentUrl: String?, e: PallyConException?) {
-                    print(e?.msg)
-                }
-
-                override fun onFailed(currentUrl: String?, e: PallyConLicenseServerException?) {
+                override fun onFailed(
+                    contentData: ContentData,
+                    e: PallyConLicenseServerException?
+                ) {
                     print("code:${e?.errorCode()}, message:${e?.message()}")
                 }
 
-                override fun onPaused(currentUrl: String?) {
-                    print("onPaused : ${currentUrl}")
+                override fun onFailed(contentData: ContentData, e: PallyConException?) {
+                    print(e?.msg)
                 }
 
-                override fun onProgress(
-                    currentUrl: String?,
-                    percent: Float,
-                    downloadedBytes: Long
-                ) {
-                    print("currentUrl:${currentUrl}, percent:${percent}")
+                override fun onRestarting(contentData: ContentData) {
+                    print("onRestarting : ${contentData.contentId}")
                 }
 
-                override fun onRemoved(currentUrl: String?) {
-                    print("onRemoved : ${currentUrl}")
+                override fun onStopped(contentData: ContentData) {
+                    print("onStopped : ${contentData.contentId}")
                 }
 
-                override fun onRestarting(currentUrl: String?) {
-                    print("onRestarting : ${currentUrl}")
+                override fun onPaused(contentData: ContentData) {
+                    print("onPaused : ${contentData.contentId}")
                 }
 
-                override fun onStopped(currentUrl: String?) {
-                    print("onStopped : ${currentUrl}")
+                override fun onRemoved(contentData: ContentData) {
+                    print("onRemoved : ${contentData.contentId}")
                 }
-
             })
-//            val content: ContentData? = intent.getParcelableExtra(CONTENT)
-//            if (content != null && content!!.url != null) {
-//                wvSDK = PallyConWvSDK.createPallyConWvSDK(
-//                    this,
-//                    content!!
-//                )
-//            }
         }
 
-        var mediaSource: MediaSource? = null
+        checkLicense();
+    }
+
+    fun checkLicense() {
         try {
             val drmInfo = wvSDK?.getDrmInformation()
             drmInfo?.let {
@@ -109,15 +99,20 @@ class PlayerActivity : Activity() {
                     Toast.makeText(applicationContext, "Expired license", Toast.LENGTH_LONG)
                         .show()
                 }
-                // mediaItem = wvSDK?.getMediaItem()
                 wvSDK?.getMediaSource()?.let { media ->
-                    mediaSource = media
+                    playContent(media)
                 }
             }
         } catch (e: PallyConException.DrmException) {
             print(e)
-            Toast.makeText(applicationContext, "DrmException", Toast.LENGTH_LONG)
-                .show()
+            wvSDK?.downloadLicense(null, onSuccess = {
+                Toast.makeText(applicationContext, "download license", Toast.LENGTH_LONG)
+                    .show()
+                checkLicense();
+            }, onFailed = { e ->
+                Toast.makeText(applicationContext, "${e.msg}", Toast.LENGTH_LONG)
+                    .show()
+            })
         } catch (e: PallyConException.DetectedDeviceTimeModifiedException) {
             print(e)
             Toast.makeText(applicationContext, "DeviceTimeModified", Toast.LENGTH_LONG)
@@ -127,26 +122,14 @@ class PlayerActivity : Activity() {
             Toast.makeText(applicationContext, "Exception", Toast.LENGTH_LONG)
                 .show()
         }
+    }
 
-        // using mediaItem
-        /*
-         ExoPlayer.Builder(this).setMediaSourceFactory(
-                DefaultMediaSourceFactory(this)
-                setDataSourceFactory(wvSDK!!.getDataSourceFactory())).build()
-        */
-
-        if (mediaSource == null) {
-            return
-        }
-
+    fun playContent(mediaSource: MediaSource) {
         ExoPlayer.Builder(this).build()
             .also { player ->
                 exoPlayer = player
-//                binding.exoplayerView.player = player
-//                exoPlayer?.setVideoSurfaceView(binding.surfaceView)
-//                exoPlayer?.setVideoSurface(binding.surfaceView.holder.surface)
                 playerView?.player = player
-                exoPlayer?.setMediaSource(mediaSource!!)
+                exoPlayer?.setMediaSource(mediaSource)
                 exoPlayer?.prepare()
                 exoPlayer?.playWhenReady = true
                 exoPlayer?.addListener(object : Player.Listener {

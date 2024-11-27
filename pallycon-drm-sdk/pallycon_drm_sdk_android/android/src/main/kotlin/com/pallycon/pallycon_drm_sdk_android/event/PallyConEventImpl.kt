@@ -1,8 +1,7 @@
 import android.os.Looper
 import com.pallycon.pallycon_drm_sdk_android.models.EventMessage
 import com.pallycon.pallycon_drm_sdk_android.models.EventType
-import com.pallycon.pallycon_drm_sdk_android.models.ProgressMessage
-import com.pallycon.pallycon_drm_sdk_android.sdk.PallyConSdk
+import com.pallycon.widevine.model.ContentData
 import io.flutter.plugin.common.EventChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -13,6 +12,20 @@ class PallyConEventImpl(
 ): PallyConEvent {
 
     override fun sendPallyConEvent(
+        contentData: ContentData,
+        eventType: EventType,
+        message: String,
+        errorCode: String
+    ) {
+        sendPallyConEvent(contentData.contentId ?: "",
+            contentData.url ?: "",
+            eventType,
+            message,
+            errorCode)
+    }
+
+    override fun sendPallyConEvent(
+        contentId: String,
         url: String,
         eventType: EventType,
         message: String,
@@ -22,7 +35,8 @@ class PallyConEventImpl(
             pallyConEvent?.success(
                 EventMessage(
                     eventType,
-                    url,
+                    contentId ?: "",
+                    url ?: "",
                     message,
                     errorCode
                 ).toMap()
@@ -32,7 +46,8 @@ class PallyConEventImpl(
                 pallyConEvent?.success(
                     EventMessage(
                         eventType,
-                        url,
+                        contentId ?: "",
+                        url ?: "",
                         message,
                         errorCode
                     ).toMap()

@@ -76,6 +76,9 @@ class MethodCallHandlerImpl : MethodChannel.MethodCallHandler,
             "addStartDownload" -> {
                 onAddDownload(call, result)
             }
+            "stopDownload" -> {
+                onStopDownload(call, result)
+            }
             "resumeDownloads" -> {
                 drmSdk?.resumeAll()
             }
@@ -231,6 +234,25 @@ class MethodCallHandlerImpl : MethodChannel.MethodCallHandler,
         }
 
         drmSdk?.addStartDownload(config)
+    }
+
+    private fun onStopDownload(call: MethodCall, result: MethodChannel.Result) {
+        if (!isInitialized) {
+            result.error(
+                "UNINITIALIZED",
+                "must be initialized before calling onGetObjectForContent()",
+                null
+            )
+            return
+        }
+
+        val config = PallyConContentConfiguration.invoke(call)
+        if (config == null) {
+            result.error("ILLEGAL_ARGUMENT", "required argument", null)
+            return
+        }
+
+        drmSdk?.stopDownload(config)
     }
 
     private fun onNeedsMigrateDatabase(call: MethodCall, result: MethodChannel.Result) {

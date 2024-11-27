@@ -28,7 +28,7 @@ Make sure you set `compileSdkVersion` in "android/app/build.gradle".
 
 ```
 android {
-  compileSdkVersion 31
+  compileSdkVersion 34
 
   ...
 }
@@ -44,6 +44,25 @@ Inside the SDK, the following 4 items are used in relation to user permission.
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 ```
+
+You can add the Maven repository configuration to the repositories block in your android/build.gradle file as follows:
+
+```gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
+            credentials {
+                username = "GitHub user id"
+                password = "GitHub access token"
+            }
+        }
+    }
+}
+```
+
 
 </details>
 
@@ -149,6 +168,9 @@ Describes the API required for the content download process.
 ```dart
 // start download
 PallyConDrmSdk.addStartDownload(PallyConContentConfiguration);
+
+// stop download
+PallyConDrmSdk.stopDownload(PallyConContentConfiguration);
 
 // cancel downloads
 PallyConDrmSdk.cancelDownloads();

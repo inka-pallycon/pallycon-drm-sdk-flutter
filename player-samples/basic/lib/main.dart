@@ -63,10 +63,10 @@ class _VideoAppState extends State<VideoApp> {
 
       PallyConContentConfiguration? config = null;
       if (Platform.isAndroid) {
-        config = PallyConContentConfiguration(content_android, "big_buck_bunny",
+        config = PallyConContentConfiguration("big_buck_bunny", content_android,
             token: token_android, licenseUrl: inkaLicenseUrl);
       } else {
-        config = PallyConContentConfiguration(content_ios, "big_buck_bunny",
+        config = PallyConContentConfiguration("big_buck_bunny", content_ios,
             token: token_ios, licenseUrl: inkaLicenseUrl);
       }
 

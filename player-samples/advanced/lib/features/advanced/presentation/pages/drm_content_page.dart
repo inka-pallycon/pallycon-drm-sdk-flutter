@@ -1,6 +1,5 @@
 import 'package:advanced/core/theme/colors_theme.dart';
 import 'package:advanced/features/advanced/presentation/controllers/drm_movie_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,12 +7,26 @@ import 'package:get/get.dart';
 import 'views/movie_cell.dart';
 
 class DrmContentPage extends GetView<DrmMovieController> {
-  const DrmContentPage({Key? key}) : super(key: key);
+  const DrmContentPage({super.key});
 
   static const platform = MethodChannel('com.pallycon/startActivity');
 
   @override
   Widget build(BuildContext context) {
+    ever(controller.errorMessage, (String? message) {
+      if (message != null) {
+        Get.snackbar(
+          'Error',
+          message,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+        controller.errorMessage.value = null;
+      }
+    });
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: ThemeColor.white,
@@ -38,8 +51,7 @@ class DrmContentPage extends GetView<DrmMovieController> {
                         drmMovie: movie,
                         onPlayPressed: () {
                           _startPlayerForDownloaded(index);
-                        }
-                    );
+                        });
                   },
                 ),
                 onLoading: const Center(child: CircularProgressIndicator()),

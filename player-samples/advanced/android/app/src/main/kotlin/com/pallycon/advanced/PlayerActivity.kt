@@ -5,18 +5,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.SurfaceView
 import android.widget.Toast
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.ui.PlayerView
 import com.google.gson.Gson
 import com.pallycon.widevine.exception.PallyConException
 import com.pallycon.widevine.exception.PallyConLicenseServerException
 import com.pallycon.widevine.model.ContentData
 import com.pallycon.widevine.model.DownloadState
-import com.pallycon.widevine.model.PallyConDrmConfigration
 import com.pallycon.widevine.model.PallyConEventListener
 import com.pallycon.widevine.sdk.PallyConWvSDK
 
@@ -24,7 +23,7 @@ class PlayerActivity : Activity() {
 
     private var exoPlayer: ExoPlayer? = null
     private var wvSDK: PallyConWvSDK? = null
-    private var playerView: StyledPlayerView? = null
+    private var playerView: PlayerView? = null
 
     companion object {
         const val CONTENT_DATA = "CONTENT_DATA"
@@ -53,43 +52,38 @@ class PlayerActivity : Activity() {
                 this,
                 contentData
             )
-            wvSDK?.setPallyConEventListener(object : PallyConEventListener {
-                override fun onCompleted(currentUrl: String?) {
-                    print("onComplete : ${currentUrl}")
+
+            PallyConWvSDK.addPallyConEventListener(object : PallyConEventListener {
+                override fun onCompleted(contentData: ContentData) {
+                    print("onComplete : ${contentData.contentId}")
                 }
 
-                override fun onFailed(currentUrl: String?, e: PallyConException?) {
-                    print(e?.msg)
-                }
-
-                override fun onFailed(currentUrl: String?, e: PallyConLicenseServerException?) {
+                override fun onFailed(
+                    contentData: ContentData,
+                    e: PallyConLicenseServerException?
+                ) {
                     print("code:${e?.errorCode()}, message:${e?.message()}")
                 }
 
-                override fun onPaused(currentUrl: String?) {
-                    print("onPaused : ${currentUrl}")
+                override fun onFailed(contentData: ContentData, e: PallyConException?) {
+                    print(e?.msg)
                 }
 
-                override fun onProgress(
-                    currentUrl: String?,
-                    percent: Float,
-                    downloadedBytes: Long
-                ) {
-                    print("currentUrl:${currentUrl}, percent:${percent}")
+                override fun onRestarting(contentData: ContentData) {
+                    print("onRestarting : ${contentData.contentId}")
                 }
 
-                override fun onRemoved(currentUrl: String?) {
-                    print("onRemoved : ${currentUrl}")
+                override fun onStopped(contentData: ContentData) {
+                    print("onStopped : ${contentData.contentId}")
                 }
 
-                override fun onRestarting(currentUrl: String?) {
-                    print("onRestarting : ${currentUrl}")
+                override fun onPaused(contentData: ContentData) {
+                    print("onPaused : ${contentData.contentId}")
                 }
 
-                override fun onStopped(currentUrl: String?) {
-                    print("onStopped : ${currentUrl}")
+                override fun onRemoved(contentData: ContentData) {
+                    print("onRemoved : ${contentData.contentId}")
                 }
-
             })
         }
 
