@@ -1,9 +1,8 @@
 ## **PallyCon DRM SDK** for Flutter Development Guide
 
+[![pub package](https://img.shields.io/badge/puv-1.1.4-orange)](https://pub.dartlang.org/packages/)
 
-[![pub package](https://img.shields.io/badge/puv-1.0.0-orange)](https://pub.dartlang.org/packages/)
-
-A Flutter pallycon_drm_sdk plugin which provides easy to apply Multi-DRM(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information. 
+A Flutter pallycon_drm_sdk plugin which provides easy to apply Multi-DRM(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information.
 
 ## **support environment**
 
@@ -38,7 +37,7 @@ android {
 
 Inside the SDK, the following 4 items are used in relation to user permission.
 
-``` xml
+```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -63,7 +62,6 @@ allprojects {
 }
 ```
 
-
 </details>
 
 <details>
@@ -72,6 +70,7 @@ allprojects {
 `PallyCon DRM SDK Flutter` uses `PallyConFPSSDK`. `PallyConFPSSDK` is supposed to be downloaded as `cocoapods`.
 
 ### SDK requirements
+
 - Minimum supported version: 11.2
 
 </details>
@@ -91,7 +90,7 @@ PallyConDrmSdk.onPallyConEvent.listen((event) {
     var downloadState = DownloadStatus.pending;
     switch (event.eventType) {
         case PallyConEventType.prepare:
-          // 
+          //
           break;
         case PallyConEventType.complete:
           // Called when download is complete
@@ -129,7 +128,7 @@ PallyConDrmSdk.onPallyConEvent.listen((event) {
   }
   // content state
 }).onError((error) {
-  // 
+  //
 });
 ```
 
@@ -194,7 +193,6 @@ PallyConDrmSdk.removeDownload(PallyConContentConfiguration);
 PallyConDrmSdk.removeLicense(PallyConContentConfiguration);
 ```
 
-
 ### **Release**
 
 Called when you end using the SDK.
@@ -202,5 +200,3 @@ Called when you end using the SDK.
 ```dart
 PallyConDrmSdk.release();
 ```
-
-

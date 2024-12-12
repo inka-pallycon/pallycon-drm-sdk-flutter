@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'pallycon_drm_sdk_ios'
-  s.version          = '1.0.0'
+  s.version          = '1.2.0'
   s.summary          = 'PallyCon DRM Flutter SDK for iOS.'
   s.description      = <<-DESC
 A new Flutter PallyCon FairPlay Streaming(FPS) SDK plugin project.
@@ -21,7 +21,7 @@ A new Flutter PallyCon FairPlay Streaming(FPS) SDK plugin project.
 #     sp.framework   = 'CoreFoundation'
 #     sp.dependency   'PallyConFPSSDK', :path => "./PallyConFPSSDK/"
 #   end
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '14.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

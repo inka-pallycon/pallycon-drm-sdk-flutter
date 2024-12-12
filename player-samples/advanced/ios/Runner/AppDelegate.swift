@@ -49,7 +49,7 @@ import PallyConFPSSDK
         let userId = drmJson["userId"] as? String ?? "utest"
 
         // 1. PallyCon FPS SDK initialize
-        pallyconSdk = try? PallyConFPSSDK(siteId: siteId, siteKey: "", fpsLicenseDelegate: self)
+        pallyconSdk = PallyConFPSSDK()
         guard let contentUrl = URL(string: url) else {
             return
         }
@@ -57,7 +57,11 @@ import PallyConFPSSDK
         let urlAsset = AVURLAsset(url: contentUrl)
         
         // 2. Acquire a Token information
-        pallyconSdk?.prepare(urlAsset: urlAsset, userId: userId, contentId: contentId, token: token, licenseUrl: drmLicenseUrl)
+        let drm_content = PallyConDrmConfiguration(avURLAsset: urlAsset, 
+                                                   contentId: contentId,
+                                                   certificateUrl: "https://license-global.pallycon.com/ri/fpsKeyManager.do?siteId=\(siteId)",
+                                                   authData: token)
+        pallyconSdk?.prepare(Content: drm_content)
         
         let playerItem = AVPlayerItem(asset: urlAsset)
         let avPlayer = AVPlayer(playerItem: playerItem)

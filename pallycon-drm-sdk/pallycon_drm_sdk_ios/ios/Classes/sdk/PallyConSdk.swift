@@ -76,7 +76,7 @@ class PallyConSdk: NSObject {
         self.progressEvent = eventSink
     }
 
-    public func sendPallyConEvent(contentId: String, url: String, eventType: PallyConEventType, message: String, errorCode: String = "") {
+    public func sendPallyConEvent(url: String, eventType: PallyConEventType, message: String, errorCode: String = "") {
         guard let event = pallyConEvent else {
             return
         }
@@ -84,25 +84,19 @@ class PallyConSdk: NSObject {
         if (!Thread.isMainThread) {
             DispatchQueue.main.sync {
                 event(
-                    EventMessage(contentId: contentId, url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
+                    EventMessage(url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
                 )
             }
         } else {
             event(
-                EventMessage(contentId: contentId, url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
+                EventMessage(url: url, eventType: eventType, message: message, errorCode: errorCode).toMap()
             )
         }
     }
 
     public func initialize(siteId: String) {
         self.siteId = siteId
-        do {
-            fpsSdk = try PallyConFPSSDK(siteId: self.siteId, siteKey: "", fpsLicenseDelegate: self)
-        } catch PallyConSDKException.DatabaseProcessError(let message) {
-             print("PallyConFPSSDK initilize failed.\n\(message)")
-        } catch {
-             print("Error: \(error).\nUnkown Error")
-        }
+        fpsSdk = PallyConFPSSDK()
     }
 
     public func release()  {
@@ -153,12 +147,19 @@ class PallyConSdk: NSObject {
         }
 
         guard let contentUrl:URL = URL(string: url) else {
-            sendPallyConEvent(contentId: contentId, url: url, eventType: PallyConEventType.downloadError, message: "String to URL convert Error!", errorCode: "")
+            sendPallyConEvent(url: url, eventType: PallyConEventType.downloadError, message: "String to URL convert Error!", errorCode: "")
             return
         }
 
-        guard let downloadTask = fpsSdk?.createDownloadTask(url: contentUrl, token: token!, downloadDelegate: self) else {
-            self.sendPallyConEvent(contentId: contentId, url: url, eventType: PallyConEventType.downloadError, message: "DownloadTask not Create! ", errorCode: "")
+        let urlAsset = AVURLAsset(url: contentUrl)
+        print("https://license-global.pallycon.com/ri/fpsKeyManager.do?siteId=\(siteId)")
+        let drm_content = PallyConDrmConfiguration(avURLAsset: urlAsset,
+                                                   contentId: contentId,
+                                                   certificateUrl: "https://license-global.pallycon.com/ri/fpsKeyManager.do?siteId=\(siteId)",
+                                                   authData: token,
+                                                   delegate: self)
+        guard let downloadTask = fpsSdk?.createDownloadTask(Content: drm_content, delegate: self) else {
+            self.sendPallyConEvent(url: url, eventType: PallyConEventType.downloadError, message: "DownloadTask not Create! ", errorCode: "")
             return
         }
 
@@ -169,18 +170,6 @@ class PallyConSdk: NSObject {
         downloadTaskMap[downloadTask] = contentInfo
         downloadTask.resume()
     }
-
-    public func stopDownload(url: String, contentId: String, token: String?, customData: String?, httpHeaders: Dictionary<String, String>?, cookie: String?, drmLicenseUrl: String?, appleCertUrl: String?) {
-    //        sendPallyConEvent(url: url, eventType: PallyConEventType.complete, message: "Complete")
-            for (task, downloadContent) in downloadTaskMap {
-                print("download task \(downloadContent.contentId)")
-                if downloadContent.url == url {
-                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                    task.resume()
-                    return
-                }
-            }
-        }
 
     public func resumeAll() {
         for task in downloadTaskMap.keys {
@@ -201,9 +190,7 @@ class PallyConSdk: NSObject {
             if downloadTaskMap[task]?.downloadState == DownloadState.downloading {
                 task.cancel()
                 downloadTaskMap[task]?.downloadState = DownloadState.pause
-                self.sendPallyConEvent(
-                                        contentId: downloadTaskMap[task]!.contentId,
-                                        url: downloadTaskMap[task]!.url,
+                self.sendPallyConEvent(url: downloadTaskMap[task]!.url,
                                        eventType: PallyConEventType.pause,
                                        message: "User Downloaded Content Pause")
             } else {
@@ -239,14 +226,14 @@ class PallyConSdk: NSObject {
         }
         self.deleteDowndloadedContent(for: downloadedContent)
         downloadedContentMap.removeValue(forKey: url)
-        self.sendPallyConEvent(contentId: downloadedContent.contentId, url: url, eventType: PallyConEventType.remove, message: "Remove Downloaded Content")
+        self.sendPallyConEvent(url: url, eventType: PallyConEventType.remove, message: "Remove Downloaded Content")
     }
 
     public func removeLicense(url: String) {
         guard let downloadedContent = downloadedContentMap[url] else {
             return
         }
-        try! self.fpsSdk?.removeLicense(contentId: downloadedContent.contentId)
+        self.fpsSdk?.deleteLicense(ContentId: downloadedContent.contentId)
     }
 }
 
@@ -278,9 +265,9 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
 
     func downloadContent(_ contentId: String, didStopWithError error: Error?) {
         print("downloadContent : didStopWithError \(contentId)")
-        var isError: Bool = false
         var localPath: String?
         var stopError: Error?
+        // send flutter Error
         if let error = error as? PallyConSDKException {
             switch error {
             case .DownloadUserCancel(let filePath):
@@ -289,7 +276,6 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
                 stopError = error
                 break
             case .DownloadUnknownError(let filePath):
-                isError = true
                 localPath = filePath
                 stopError = error
                 break
@@ -300,25 +286,47 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
                 UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
             default:
                 print("Error: \(error). Unkown.")
-                isError = true
                 break
             }
         }
 
         var contentUrl:String = ""
-        if isError {
-            for (task, downloadContent) in downloadTaskMap {
-                if downloadContent.contentId == contentId {
-                    contentUrl = downloadContent.url
-                    downloadTaskMap.removeValue(forKey: task)
-                    break
-                }
+        for (task, downloadContent) in downloadTaskMap {
+            if downloadContent.contentId == contentId {
+                contentUrl = downloadContent.url
+                downloadTaskMap.removeValue(forKey: task)
+                break
             }
-            self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.unknownError,
-                                   message: "download stop : \(String(describing: localPath))",
+        }
+        // PallyCon SDK Error
+        var message = ""
+        if let error = error as? PallyConError {
+            switch error {
+            case .database(comment: let comment):
+                message = comment
+            case .server(errorCode: let errorCode, comment: let comment):
+                message = "code : \(errorCode), comment: \(comment)"
+            case .network(errorCode: let errorCode, comment: let comment):
+                message = "code : \(errorCode), comment: \(comment)"
+            case .system(errorCode: let errorCode, comment: let comment):
+                message = "code : \(errorCode), comment: \(comment)"
+            case .failed(errorCode: let errorCode, comment: let comment):
+                message = "code : \(errorCode), comment: \(comment)"
+            case .unknown(errorCode: let errorCode, comment: let comment):
+                message = "code : \(errorCode), comment: \(comment)"
+            case .invalid(comment: let comment):
+                message = "comment: \(comment)"
+            default:
+                message = "comment: \(error)"
+                break
+            }
+
+            self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.unknownError,
+                                   message: "download stop : \(String(describing: localPath)) \n\(message)",
                                    errorCode: "")
         } else {
-            self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.pause,
+            // 정상적으로 다운로드가 멈출 때
+            self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.pause,
                                    message: "user download stop : \(String(describing: localPath))",
                                    errorCode: "")
         }
@@ -338,7 +346,7 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
             }
         }
 
-        self.sendPallyConEvent(contentId: contentId, url: contentUrl, eventType: PallyConEventType.complete, message: "\(location.absoluteString)", errorCode: "")
+        self.sendPallyConEvent(url: contentUrl, eventType: PallyConEventType.complete, message: "\(location.absoluteString)", errorCode: "")
 
         return
     }
@@ -377,43 +385,48 @@ extension PallyConSdk: PallyConFPSDownloadDelegate {
 
 
 extension PallyConSdk: PallyConFPSLicenseDelegate {
-    func fpsLicenseDidSuccessAcquiring(contentId: String) {
-        print("License Success : \(contentId)")
-        self.sendPallyConEvent(contentId: contentId, url: contentId, eventType: PallyConEventType.complete, message: contentId, errorCode: "")
-    }
 
-    func fpsLicense(contentId: String, didFailWithError error: Error) {
-        print("License Failed  : \(contentId)")
-
-        var errorMessage = ""
-        var eventType: PallyConEventType = PallyConEventType.licenseServerError
-        if let error = error as? PallyConSDKException {
-            switch error {
-            case .ServerConnectionFail(let message):
-                eventType = PallyConEventType.licenseServerError
-                errorMessage = "server connection fail = \(message)"
-            case .NetworkError(let networkError):
-                errorMessage = "Network Error = \(networkError)"
-                eventType = PallyConEventType.networkConnectedError
-            case .AcquireLicenseFailFromServer(let code, let message):
-                errorMessage = "ServerCode = \(code).\n\(message)"
-                eventType = PallyConEventType.licenseServerError
-            case .DatabaseProcessError(let message):
-                errorMessage = "DB Error = \(message)"
-                eventType = PallyConEventType.drmError
-            case .InternalException(let message):
-                errorMessage = "SDK internal Error = \(message)"
-                eventType = PallyConEventType.drmError
-            default:
-                print("Error: \(error). Unkown.")
-                eventType = PallyConEventType.unknownError
-                break
-            }
-        } else {
-            print("Error: \(error). Unkown")
+    func license(result: PallyConResult) {
+        print("---------------------------- License Result ")
+        print("Content ID : \(result.contentId)")
+        print("Key ID     : \(String(describing: result.keyId))")
+        //print("Expiry Date: \(String(describing: result.offlineExpiry))")
+        var message: String = ""
+        if result.isSuccess == false {
+             print("Error : \(String(describing: result.error?.localizedDescription))")
+             if let error = result.error {
+                  switch error {
+                  case .database(comment: let comment):
+                       print(comment)
+                       message = comment
+                  case .server(errorCode: let errorCode, comment: let comment):
+                       print("code : \(errorCode), comment: \(comment)")
+                       message = "code : \(errorCode), comment: \(comment)"
+                  case .network(errorCode: let errorCode, comment: let comment):
+                       print("code : \(errorCode), comment: \(comment)")
+                       message = "code : \(errorCode), comment: \(comment)"
+                  case .system(errorCode: let errorCode, comment: let comment):
+                       print("code : \(errorCode), comment: \(comment)")
+                       message = "code : \(errorCode), comment: \(comment)"
+                  case .failed(errorCode: let errorCode, comment: let comment):
+                       print("code : \(errorCode), comment: \(comment)")
+                       message = "code : \(errorCode), comment: \(comment)"
+                  case .unknown(errorCode: let errorCode, comment: let comment):
+                       print("code : \(errorCode), comment: \(comment)")
+                       message = "code : \(errorCode), comment: \(comment)"
+                  case .invalid(comment: let comment):
+                       print("comment: \(comment)")
+                       message = "comment: \(comment)"
+                  default:
+                       print("comment: \(error)")
+                       message = "comment: \(error)"
+                      break
+                  }
+             }
         }
-
-        self.sendPallyConEvent(contentId: contentId, url: contentId, eventType: eventType, message: errorMessage, errorCode: "")
+        self.sendPallyConEvent(url: result.contentId,
+                               eventType: PallyConEventType.drmError,
+                               message: message, errorCode: "")
     }
 }
 
