@@ -14,11 +14,10 @@ class MovieRepositoryImpl implements MovieRepository {
   final PallyConContentLocalDataSource localDataSource;
   final PallyConContentUserDataSource userDataSource;
 
-  MovieRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.userDataSource
-  });
+  MovieRepositoryImpl(
+      {required this.remoteDataSource,
+      required this.localDataSource,
+      required this.userDataSource});
 
   @override
   Future<Either<Failure, DrmContentModel>> getDrmContent() async {
@@ -38,7 +37,8 @@ class MovieRepositoryImpl implements MovieRepository {
         for (var i = 0; i < remoteContentModel.totalResults; i++) {
           final token = await remoteDataSource.getToken(
               drmType, remoteContentModel.contents[i].contentId);
-          remoteContentModel.contents[i].copyWith(token: token.token);
+          remoteContentModel.contents[i] =
+              remoteContentModel.contents[i].copyWith(token: token.token);
         }
         localDataSource.cacheDrmContentModel(remoteContentModel);
         drmContentModel.totalResults += remoteContentModel.totalResults;
