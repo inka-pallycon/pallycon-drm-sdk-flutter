@@ -38,7 +38,7 @@ class MovieRepositoryImpl implements MovieRepository {
         for (var i = 0; i < remoteContentModel.totalResults; i++) {
           final token = await remoteDataSource.getToken(
               drmType, remoteContentModel.contents[i].contentId);
-          remoteContentModel.contents[i].token = token.token;
+          remoteContentModel.contents[i].copyWith(token: token.token);
         }
         localDataSource.cacheDrmContentModel(remoteContentModel);
         drmContentModel.totalResults += remoteContentModel.totalResults;

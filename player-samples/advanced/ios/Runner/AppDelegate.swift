@@ -4,7 +4,7 @@ import AVKit
 import Flutter
 import PallyConFPSSDK
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     
     var pallyconSdk: PallyConFPSSDK?

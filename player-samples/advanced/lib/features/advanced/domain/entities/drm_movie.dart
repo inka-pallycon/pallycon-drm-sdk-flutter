@@ -18,10 +18,10 @@ class DrmMovie extends Equatable {
   final String? licenseServerUrl;
   final String? licenseCipherPath;
   final String? licenseCertUrl;
-  String? token;
-  DownloadStatus? downloadStatus;
+  final String? token;
+  final DownloadStatus? downloadStatus;
 
-  DrmMovie(
+  const DrmMovie(
       {required this.url,
       required this.contentType,
       required this.streamFormat,
@@ -56,10 +56,53 @@ class DrmMovie extends Equatable {
         containerFormat,
         audioCodec,
         audioLanguage,
-        licenseServerUrl ?? "https://license-global.pallycon.com/ri/licenseManager.do/",
+        licenseServerUrl ??
+            "https://license-global.pallycon.com/ri/licenseManager.do/",
         licenseCipherPath ?? "",
         licenseCertUrl ?? "",
         token ?? "",
         downloadStatus ?? DownloadStatus.pending
       ];
+
+  DrmMovie copyWith({
+    String? url,
+    String? contentType,
+    String? streamFormat,
+    String? mediaType,
+    String? title,
+    String? contentId,
+    String? videoCodec,
+    String? videoProfile,
+    String? maximumResolution,
+    String? frameRate,
+    String? containerFormat,
+    String? audioCodec,
+    String? audioLanguage,
+    String? licenseServerUrl,
+    String? licenseCipherPath,
+    String? licenseCertUrl,
+    String? token,
+    DownloadStatus? downloadStatus,
+  }) {
+    return DrmMovie(
+      url: url ?? this.url,
+      contentType: contentType ?? this.contentType,
+      streamFormat: streamFormat ?? this.streamFormat,
+      mediaType: mediaType ?? this.mediaType,
+      title: title ?? this.title,
+      contentId: contentId ?? this.contentId,
+      videoCodec: videoCodec ?? this.videoCodec,
+      videoProfile: videoProfile ?? this.videoProfile,
+      maximumResolution: maximumResolution ?? this.maximumResolution,
+      frameRate: frameRate ?? this.frameRate,
+      containerFormat: containerFormat ?? this.containerFormat,
+      audioCodec: audioCodec ?? this.audioCodec,
+      audioLanguage: audioLanguage ?? this.audioLanguage,
+      licenseServerUrl: licenseServerUrl ?? this.licenseServerUrl,
+      licenseCipherPath: licenseCipherPath ?? this.licenseCipherPath,
+      licenseCertUrl: licenseCertUrl ?? this.licenseCertUrl,
+      token: token ?? this.token,
+      downloadStatus: downloadStatus ?? this.downloadStatus,
+    );
+  }
 }

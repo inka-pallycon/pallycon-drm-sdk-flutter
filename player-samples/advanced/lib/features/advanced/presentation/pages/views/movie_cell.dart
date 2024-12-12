@@ -131,7 +131,7 @@ class MovieCellState extends State<MovieCell> {
         licenseUrl: config.licenseUrl,
         headers: {
           "pallycon-customdata-v2": config.token ?? "",
-          "siteId": DrmMovieController.siteId ?? ""
+          "siteId": DrmMovieController.siteId
         });
 
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(

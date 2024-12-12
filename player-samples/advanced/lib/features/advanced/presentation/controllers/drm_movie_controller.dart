@@ -22,7 +22,6 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
       "https://license-global.pallycon.com/ri/fpsKeyManager.do";
   static const siteId = "DEMO";
 
-  // var movies = RxList<DrmMovie>([]);
   var pallyConContentConfigs = RxList<PallyConContentConfiguration>([]);
   var downloadPercent = <Tuple2<String, double>>[].obs;
   String checkExtension = ".mpd";
@@ -104,9 +103,8 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
         var index = state!.indexWhere((p0) => p0.url == event.url);
         if (index >= 0 &&
             state![index].downloadStatus != DownloadStatus.success) {
-          state![index] = state![index].copyWith(
-            downloadStatus: DownloadStatus.running,
-          );
+          state![index] =
+              state![index].copyWith(downloadStatus: DownloadStatus.running);
         }
 
         downloadPercent.removeWhere((element) => element.value1 == event.url);
@@ -242,9 +240,7 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
   }
 
   downloadStateCheck(int index) async {
-    if (state == null) {
-      return;
-    }
+    if (state == null) return;
 
     try {
       var needsMigration = await PallyConDrmSdk.needsMigrateDatabase(
@@ -255,6 +251,7 @@ class DrmMovieController extends SuperController<List<DrmMovie>> {
 
       PallyConDownloadState downloadState =
           await PallyConDrmSdk.getDownloadState(pallyConContentConfigs[index]);
+
       switch (downloadState) {
         case PallyConDownloadState.DOWNLOADING:
           state![index] =

@@ -6,99 +6,123 @@ part 'drm_movie_model.g.dart';
 
 @JsonSerializable()
 class DrmMovieModel extends DrmMovie {
-  DrmMovieModel(
-      this.url,
-      this.contentType,
-      this.streamFormat,
-      this.mediaType,
-      this.title,
-      this.contentId,
-      this.videoCodec,
-      this.videoProfile,
-      this.maximumResolution,
-      this.frameRate,
-      this.containerFormat,
-      this.audioCodec,
-      this.audioLanguage,
-      this.licenseServerUrl,
-      this.licenseCipherPath,
-      this.licenseCertUrl,
-      this.token,
-      this.downloadStatus)
-      : super(
-            url: url,
-            contentType: contentType,
-            streamFormat: streamFormat,
-            mediaType: mediaType,
-            title: title,
-            contentId: contentId,
-            videoCodec: videoCodec,
-            videoProfile: videoProfile,
-            maximumResolution: maximumResolution,
-            frameRate: frameRate,
-            containerFormat: containerFormat,
-            audioCodec: audioCodec,
-            audioLanguage: audioLanguage,
-            licenseServerUrl: licenseServerUrl,
-            licenseCipherPath: licenseCipherPath,
-            licenseCertUrl: licenseCertUrl,
-            token: token,
-            downloadStatus: downloadStatus );
-
   @JsonKey(name: 'url')
-  String url;
-
+  final String url;
   @JsonKey(name: 'content_type')
-  String contentType;
-
+  final String contentType;
   @JsonKey(name: 'stream_format')
-  String streamFormat;
-
+  final String streamFormat;
   @JsonKey(name: 'media_type')
-  String mediaType;
-
+  final String mediaType;
   @JsonKey(name: 'title')
-  String title;
-
+  final String title;
   @JsonKey(name: 'content_id')
-  String contentId;
-
+  final String contentId;
   @JsonKey(name: 'video_codec')
-  String videoCodec;
-
+  final String videoCodec;
   @JsonKey(name: 'video_profile')
-  String videoProfile;
-
+  final String videoProfile;
   @JsonKey(name: 'maximum_resolution')
-  String maximumResolution;
-
+  final String maximumResolution;
   @JsonKey(name: 'frame_rate')
-  String frameRate;
-
+  final String frameRate;
   @JsonKey(name: 'container_format')
-  String containerFormat;
-
+  final String containerFormat;
   @JsonKey(name: 'audio_codec')
-  String audioCodec;
-
+  final String audioCodec;
   @JsonKey(name: 'audio_language')
-  String audioLanguage;
+  final String audioLanguage;
+  final String? licenseServerUrl;
+  final String? licenseCipherPath;
+  final String? licenseCertUrl;
+  final String? token;
+  final DownloadStatus? downloadStatus;
 
-  @JsonKey(name: 'license_server_url')
-  String? licenseServerUrl;
-
-  @JsonKey(name: 'license_cipher_path')
-  String? licenseCipherPath;
-
-  @JsonKey(name: 'license_cert_url')
-  String? licenseCertUrl;
-
-  String? token;
-
-  DownloadStatus? downloadStatus;
+  const DrmMovieModel({
+    required this.url,
+    required this.contentType,
+    required this.streamFormat,
+    required this.mediaType,
+    required this.title,
+    required this.contentId,
+    required this.videoCodec,
+    required this.videoProfile,
+    required this.maximumResolution,
+    required this.frameRate,
+    required this.containerFormat,
+    required this.audioCodec,
+    required this.audioLanguage,
+    this.licenseServerUrl,
+    this.licenseCipherPath,
+    this.licenseCertUrl,
+    this.token,
+    this.downloadStatus,
+  }) : super(
+          url: url,
+          contentType: contentType,
+          streamFormat: streamFormat,
+          mediaType: mediaType,
+          title: title,
+          contentId: contentId,
+          videoCodec: videoCodec,
+          videoProfile: videoProfile,
+          maximumResolution: maximumResolution,
+          frameRate: frameRate,
+          containerFormat: containerFormat,
+          audioCodec: audioCodec,
+          audioLanguage: audioLanguage,
+          licenseServerUrl: licenseServerUrl,
+          licenseCipherPath: licenseCipherPath,
+          licenseCertUrl: licenseCertUrl,
+          token: token,
+          downloadStatus: downloadStatus,
+        );
 
   factory DrmMovieModel.fromJson(Map<String, dynamic> json) =>
       _$DrmMovieModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DrmMovieModelToJson(this);
+
+  @override
+  DrmMovieModel copyWith({
+    String? url,
+    String? contentType,
+    String? streamFormat,
+    String? mediaType,
+    String? title,
+    String? contentId,
+    String? videoCodec,
+    String? videoProfile,
+    String? maximumResolution,
+    String? frameRate,
+    String? containerFormat,
+    String? audioCodec,
+    String? audioLanguage,
+    String? licenseServerUrl,
+    String? licenseCipherPath,
+    String? licenseCertUrl,
+    String? token,
+    DownloadStatus? downloadStatus,
+  }) {
+    return DrmMovieModel(
+      url: url ?? this.url,
+      contentType: contentType ?? this.contentType,
+      streamFormat: streamFormat ?? this.streamFormat,
+      mediaType: mediaType ?? this.mediaType,
+      title: title ?? this.title,
+      contentId: contentId ?? this.contentId,
+      videoCodec: videoCodec ?? this.videoCodec,
+      videoProfile: videoProfile ?? this.videoProfile,
+      maximumResolution: maximumResolution ?? this.maximumResolution,
+      frameRate: frameRate ?? this.frameRate,
+      containerFormat: containerFormat ?? this.containerFormat,
+      audioCodec: audioCodec ?? this.audioCodec,
+      audioLanguage: audioLanguage ?? this.audioLanguage,
+      licenseServerUrl: licenseServerUrl ?? this.licenseServerUrl,
+      licenseCipherPath: licenseCipherPath ?? this.licenseCipherPath,
+      licenseCertUrl: licenseCertUrl ?? this.licenseCertUrl,
+      token: token ?? this.token,
+      downloadStatus: downloadStatus ?? this.downloadStatus,
+    );
+  }
 }
