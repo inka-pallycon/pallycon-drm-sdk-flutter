@@ -5,8 +5,8 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
             credentials {
-                username = ""
-                password = ""
+                username = project.findProperty("gpr.user") ?: ""
+                password = project.findProperty("gpr.token") ?: ""
             }
         }
     }

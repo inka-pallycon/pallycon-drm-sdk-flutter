@@ -1,3 +1,7 @@
+# Version 1.1.5
+
+>- The widevine SDK 4.3.2 is distributed via GitHub packages and can be downloaded using a github access token.
+
 # Version 1.1.4
 
 >- android sdk has been updated to version 1.1.4

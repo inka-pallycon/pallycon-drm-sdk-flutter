@@ -1,18 +1,18 @@
 # pallycon_drm_sdk_android
 
-[![pub package](https://img.shields.io/badge/puv-1.1.4-orange)](https://pub.dartlang.org/packages/pallycon_drm_sdk)
+[![pub package](https://img.shields.io/badge/puv-1.1.5-orange)](https://pub.dartlang.org/packages/pallycon_drm_sdk)
 
 This is the official Android implementation of the [pallycon_drm_sdk][1] plugin developed by [PallyCon][2] for use in Flutter applications.
 
 ## Usage
 
-On iOS, the [pallycon_drm_sdk][1] plugin has been available since version 1.1.4, and we always recommend using the latest version (>=1.1.4).
-It will automatically be included as a dependency when you include `pallycon_drm_sdk: ">=1.1.4"` in your app's pubspec.yaml file.
+On iOS, the [pallycon_drm_sdk][1] plugin has been available since version 1.1.5, and we always recommend using the latest version (>=1.1.5).
+It will automatically be included as a dependency when you include `pallycon_drm_sdk: ">=1.1.5"` in your app's pubspec.yaml file.
 
 ```yaml
 # pubspec.yaml
 dependencies:
-  pallycon_drm_sdk: ">=1.1.4"
+  pallycon_drm_sdk: ">=1.1.5"
 ```
 
 For more detailed instructions on using the API, please refer to the [README.md][3] file of the [pallycon_drm_sdk][1] package.

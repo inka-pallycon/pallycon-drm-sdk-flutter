@@ -1,14 +1,14 @@
 ## **PallyCon DRM SDK** for Flutter Development Guide
 
-[![pub package](https://img.shields.io/badge/puv-1.1.4-orange)](https://pub.dartlang.org/packages/)
+[![pub package](https://img.shields.io/badge/puv-1.1.5-orange)](https://pub.dartlang.org/packages/)
 
 A Flutter pallycon_drm_sdk plugin which provides easy to apply Multi-DRM(Android: Widevine, iOS: FairPlay) when developing media service apps for Android and iOS. Please refer to the links below for detailed information.
 
 ## **support environment**
 
-- Android 5.0 (Lolipop) & Android targetSdkVersion 31 or higher
+- Android 5.0 (Lolipop) & Android targetSdkVersion 34 or higher
 - iOS 12.0 higher
-- This SDK supports ExoPlayer version 2.18.1 on Android.
+- This SDK supports media3 version 1.4.1 on Android.
 
 ## **Important**
 
@@ -54,12 +54,19 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
             credentials {
-                username = "GitHub user id"
-                password = "GitHub access token"
+                username = project.findProperty("gpr.user") ?: ""
+                password = project.findProperty("gpr.token") ?: ""
             }
         }
     }
 }
+```
+
+In the gradle.properties file in the android directory of your project, add the GitHub user (e-mail) and the generated GitHub access token as shown below.
+
+```gradle
+gpr.user = GITHUB_USER
+gpr.token = GITHUB_ACCESS_TOKEN
 ```
 
 </details>
@@ -71,7 +78,7 @@ allprojects {
 
 ### SDK requirements
 
-- Minimum supported version: 11.2
+- Minimum supported version: 14.0
 
 </details>
 

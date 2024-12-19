@@ -13,13 +13,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
-            credentials {
-                username = "GitHub username"
-                password = "GitHub access token"
-            }
-        }
     }
 
     dependencies {
@@ -35,19 +28,10 @@ rootProject.allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/inka-pallycon/pallycon-widevine-android-sdk")
             credentials {
-                username = ""
-                password = ""
+                username = project.findProperty("gpr.user") ?: ""
+                password = project.findProperty("gpr.token") ?: ""
             }
         }
-//        mavenLocal()
-//        maven { url 'https://jitpack.io' }
-//        maven {
-//            url 'https://pkgs.dev.azure.com/mraws/PallyCon/_packaging/PallyConWidevineSDK/maven/v1'
-//        }
-//        flatDir {
-//            dirs "$projectDir/libs"
-//            dirs project(":pallycon_drm_sdk_android").file('libs')
-//        }
     }
 }
 
